@@ -2,6 +2,36 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
+public class UpgradeBuilding {
+	public float ObtainGoldSeconds;
+	public float ObtailGoldDay;
+	public float CostGold;
+	public float CostTime;
+}
+
+[System.Serializable]
+public class UpgradeLand {
+	public int MaxPeople;
+	public int SpawnPeopleSeconds;
+	public float CostGold;
+	public float CostTime;
+}
+
+[System.Serializable]
+public class UpgradeFishing {
+	public int FishType;
+	public float CostGold;
+	public float CostTime;
+}
+
+[System.Serializable]
+public class UpgradeTech {
+	public int ActiveState;
+	public float CostGold;
+	public float CostTime;
+}
+
 public class GameSystemCtrl : MonoBehaviour {
 
 	[Header("- Time Settings -")]
@@ -11,8 +41,16 @@ public class GameSystemCtrl : MonoBehaviour {
 	private int daySurvives;
 	private float dayProgress;
 
-	// [Header("- Upgrade Settings -")]
-	// public UpgradeBuilding[] MaxBuildingUpgrade;
+	[Header("- Upgrade Settings -")]
+	public UpgradeBuilding[] UpgradeBuildingData;
+	public UpgradeLand[] UpgradeLandData;
+	public UpgradeFishing[] UpgradeFishingData;
+	public UpgradeTech[] UpgradeTechData;
+
+	private int upgradeBuildingLevel;
+	private int upgradeLandLevel;
+	private int upgradeFishingLevel;
+	private int upgradeTechLevel;
 
 	/* Event Functions */
 
@@ -20,6 +58,10 @@ public class GameSystemCtrl : MonoBehaviour {
 		dayRun = true;
 		daySurvives = 1;
 		dayProgress = 0f;
+		upgradeBuildingLevel = 1;
+		upgradeLandLevel = 1;
+		upgradeFishingLevel = 1;
+		upgradeTechLevel = 1;
 	}
 	
 	void Update () {
@@ -38,6 +80,19 @@ public class GameSystemCtrl : MonoBehaviour {
 		return daySurvives;
 	}
 
+	public int getUpgradeBuildingLevel() {
+		return upgradeBuildingLevel;
+	}
+	public int getUpgradeLandLevel() {
+		return upgradeLandLevel;
+	}
+	public int getUpgradeFishingLevel() {
+		return upgradeFishingLevel;
+	}
+	public int getUpgradeTechLevel() {
+		return upgradeTechLevel;
+	}
+
 	/* Get Functions */
 
 	/* Logic Functions */
@@ -54,11 +109,3 @@ public class GameSystemCtrl : MonoBehaviour {
 	/* Logic Functions */
 
 }
-
-// [SerializeField]
-// public struct UpgradeBuilding : MonoBehaviour {
-// 	float ObtainGoldSecond;
-// 	float ObtailGoldDay;
-// 	float CostGold;
-// 	float CostTime;
-// }
