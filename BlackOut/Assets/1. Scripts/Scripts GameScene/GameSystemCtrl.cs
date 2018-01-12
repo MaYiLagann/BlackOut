@@ -198,6 +198,10 @@ public class GameSystemCtrl : MonoBehaviour {
 
 	/* Logic Functions */
 
+	public void GameEnd() {
+		Application.Quit();
+	}
+
 	public void setUpgradeBuildingLevel() {
 		if(upgradeBuildingState) return;
 		if(UpgradeBuildingData.Length < upgradeBuildingLevel) return;

@@ -7,9 +7,12 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Canvas))]
 public class GameSceneUiCtrl : MonoBehaviour {
 
+	[Header("- Static Settings -")]
+	public Text StaticTimeText;
+	public Text StaticCurrentGoldText;
+
+
 	[Header("- Main Settings -")]
-	public Text MainTimeText;
-	public Text MainCurrentGoldText;
 	public Text MainUpgradeBuildingSecondsText;
 	public Text MainUpgradeLandSecondsText;
 	public Text MainUpgradeFishingSecondsText;
@@ -20,7 +23,6 @@ public class GameSceneUiCtrl : MonoBehaviour {
 	public GameObject MainUpgradeTechStatePanel;
 
 	[Header("- Upgrade Settings -")]
-	public Text UpgradeCurrentGoldText;
 	public Text UpgradeCurrentBuildingLevelText;
 	public Text UpgradeCurrentBuildingCostText;
 	public Text UpgradeCurrentLandLevelText;
@@ -61,15 +63,33 @@ public class GameSceneUiCtrl : MonoBehaviour {
 
 	void FixedUpdate() {
 
+		SetStaticUiValues();
 		switch(gameObject.GetComponent<Animator>().GetInteger("State")){
+			case -1:
+				if(Input.GetKeyDown(KeyCode.Escape)) {
+					SetAnim(0);
+					CurrentGameSystemCtrl.toggleDayRun(true);
+				}
+			break;
 			case 0:
 				SetMainUiValues();
+				if(Input.GetKeyDown(KeyCode.Escape)) {
+					SetAnim(-1);
+					CurrentGameSystemCtrl.toggleDayRun(false);
+				}
 			break;
 			case 1:
 				SetDevUiValues();
+				if(Input.GetKeyDown(KeyCode.Escape)) {
+					SetAnim(0);
+				}
 			break;
 			case 2:
 				SetUpgradeUiValues();
+				if(Input.GetKeyDown(KeyCode.Escape)) {
+					SetAnim(0);
+					CurrentGameSystemCtrl.toggleDayRun(true);
+				}
 			break;
 		}
 
@@ -91,10 +111,13 @@ public class GameSceneUiCtrl : MonoBehaviour {
 		anim.SetTrigger("Move");
 	}
 
-	private void SetMainUiValues() {
+	private void SetStaticUiValues() {
 		System.DateTime date = CurrentGameSystemCtrl.getDayDateTime();
-		MainTimeText.text = date.Month + "월 " + date.Day + "일 " + date.Hour + "시 " + date.Minute + "분";
-		MainCurrentGoldText.text = CurrentGameSystemCtrl.getCurrentGold().ToString("F0");
+		StaticTimeText.text = date.Month + "월 " + date.Day + "일 " + date.Hour + "시 " + date.Minute + "분";
+		StaticCurrentGoldText.text = CurrentGameSystemCtrl.getCurrentGold().ToString("F0");
+	}
+
+	private void SetMainUiValues() {
 		MainUpgradeBuildingStatePanel.SetActive(CurrentGameSystemCtrl.getUpgradeBuildingState());
 		MainUpgradeLandStatePanel.SetActive(CurrentGameSystemCtrl.getUpgradeLandState());
 		MainUpgradeFishingStatePanel.SetActive(CurrentGameSystemCtrl.getUpgradeFishingState());
@@ -120,7 +143,6 @@ public class GameSceneUiCtrl : MonoBehaviour {
 	}
 
 	private void SetUpgradeUiValues() {
-		UpgradeCurrentGoldText.text = CurrentGameSystemCtrl.getCurrentGold().ToString("F0");
 		UpgradeCurrentBuildingLevelText.text = CurrentGameSystemCtrl.getUpgradeBuildingLevel().ToString();
 		UpgradeCurrentBuildingCostText.text = CurrentGameSystemCtrl.getUpgradeBuildingCost().ToString();
 		UpgradeCurrentLandLevelText.text = CurrentGameSystemCtrl.getUpgradeLandLevel().ToString();
