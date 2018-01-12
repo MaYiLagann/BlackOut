@@ -5,7 +5,6 @@ using UnityEngine;
 [System.Serializable]
 public class UpgradeBuilding {
 	public float ObtainGoldSeconds;
-	public float ObtailGoldDay;
 	public float CostGold;
 	public float CostTime;
 }
@@ -52,6 +51,11 @@ public class GameSystemCtrl : MonoBehaviour {
 	private int upgradeFishingLevel;
 	private int upgradeTechLevel;
 
+	[Header("- Gold Settings -")]
+	public float StartGold = 0;
+
+	private float currentGold;
+
 	/* Event Functions */
 
 	void Awake () {
@@ -62,10 +66,15 @@ public class GameSystemCtrl : MonoBehaviour {
 		upgradeLandLevel = 1;
 		upgradeFishingLevel = 1;
 		upgradeTechLevel = 1;
+		currentGold = StartGold;
 	}
 	
 	void Update () {
 		RunTime();
+	}
+
+	void SecondUpdate () {
+		currentGold += UpgradeBuildingData[upgradeBuildingLevel-1].ObtainGoldSeconds;
 	}
 
 	/* Event Functions */
@@ -93,13 +102,53 @@ public class GameSystemCtrl : MonoBehaviour {
 		return upgradeTechLevel;
 	}
 
+	public float getCurrentGold(){
+		return currentGold;
+	}
+
 	/* Get Functions */
 
 	/* Logic Functions */
 
+	public void setUpgradeBuildingLevel() {
+		if(UpgradeBuildingData.Length < upgradeBuildingLevel+1) return;
+		if(UpgradeBuildingData[upgradeBuildingLevel].CostGold > currentGold) return;
+		
+		currentGold -= UpgradeBuildingData[upgradeBuildingLevel].CostGold;
+		upgradeBuildingLevel++;
+	}
+	
+	public void setUpgradeLandLevel() {
+		if(UpgradeLandData.Length < upgradeLandLevel+1) return;
+		if(UpgradeLandData[upgradeLandLevel].CostGold > currentGold) return;
+		
+		currentGold -= UpgradeLandData[upgradeLandLevel].CostGold;
+		upgradeLandLevel++;
+	}
+	
+	public void setUpgradeFishingLevel() {
+		if(UpgradeFishingData.Length < upgradeFishingLevel+1) return;
+		if(UpgradeFishingData[upgradeFishingLevel].CostGold > currentGold) return;
+		
+		currentGold -= UpgradeFishingData[upgradeFishingLevel].CostGold;
+		upgradeFishingLevel++;
+	}
+	
+	public void setUpgradeTechLevel() {
+		if(UpgradeTechData.Length < upgradeTechLevel+1) return;
+		if(UpgradeTechData[upgradeTechLevel].CostGold > currentGold) return;
+		
+		currentGold -= UpgradeTechData[upgradeTechLevel].CostGold;
+		upgradeTechLevel++;
+	}
+
 	private void RunTime() {
 		if(!dayRun) return;
+
+		float prev_dayp = dayProgress;
 		dayProgress += Time.deltaTime;
+		if(((int)prev_dayp) != ((int)dayProgress)) SecondUpdate();
+
 		if(dayProgress >= DaySeconds){
 			dayProgress -= DaySeconds;
 			daySurvives++;

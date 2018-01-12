@@ -14,6 +14,7 @@ public class GameSceneUiCtrl : MonoBehaviour {
 	public Text CurrentUpgradeLandLevelText;
 	public Text CurrentUpgradeFishingLevelText;
 	public Text CurrentUpgradeTechLevelText;
+	public Text CurrentGoldText;
 
 	[Header("- Day Night Cycle Settings -")]
 	public Animator DayNightCycleAnimator;
@@ -27,7 +28,7 @@ public class GameSceneUiCtrl : MonoBehaviour {
 		SetDayNightCycle();
 	}
 
-	void Update() {
+	void FixedUpdate() {
 		SetUiValues();
 	}
 	
@@ -49,6 +50,7 @@ public class GameSceneUiCtrl : MonoBehaviour {
 		CurrentUpgradeLandLevelText.text = "토지 레벨: " + CurrentGameSystemCtrl.getUpgradeLandLevel();
 		CurrentUpgradeFishingLevelText.text = "낚시 레벨: " + CurrentGameSystemCtrl.getUpgradeFishingLevel();
 		CurrentUpgradeTechLevelText.text = "기술 레벨: " + CurrentGameSystemCtrl.getUpgradeTechLevel();
+		CurrentGoldText.text = "현재 돈: " + CurrentGameSystemCtrl.getCurrentGold();
 	}
 
 	private void SetDayNightCycle() {
