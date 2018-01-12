@@ -8,7 +8,15 @@ using UnityEngine.UI;
 public class GameSceneUiCtrl : MonoBehaviour {
 
 	[Header("- Main Settings -")]
-	public Text CurrentGoldText;
+	public Text MainCurrentGoldText;
+	public GameObject MainUpgradeBuildingStatePanel;
+	public Text MainUpagradeBuildingSecondsText;
+	public Text MainUpagradeLandSecondsText;
+	public Text MainUpagradeFishingSecondsText;
+	public Text MainUpagradeTechSecondsText;
+	public GameObject MainUpgradeLandStatePanel;
+	public GameObject MainUpgradeFishingStatePanel;
+	public GameObject MainUpgradeTechStatePanel;
 
 	[Header("- Upgrade Settings -")]
 	public Text UpgradeCurrentGoldText;
@@ -20,6 +28,10 @@ public class GameSceneUiCtrl : MonoBehaviour {
 	public Text UpgradeCurrentFishingCostText;
 	public Text UpgradeCurrentTechLevelText;
 	public Text UpgradeCurrentTechCostText;
+	public Button UpgradeBuildingButton;
+	public Button UpgradeLandButton;
+	public Button UpgradeFishingButton;
+	public Button UpgradeTechButton;
 
 	[Header("- Dev Settings -")]
 	public Text DevCurrentDayProgressText;
@@ -28,6 +40,10 @@ public class GameSceneUiCtrl : MonoBehaviour {
 	public Text DevCurrentUpgradeLandLevelText;
 	public Text DevCurrentUpgradeFishingLevelText;
 	public Text DevCurrentUpgradeTechLevelText;
+	public Text DevCurrentUpgradeBuildingSecondsText;
+	public Text DevCurrentUpgradeLandSecondsText;
+	public Text DevCurrentUpgradeFishingSecondsText;
+	public Text DevCurrentUpgradeTechSecondsText;
 	public Text DevCurrentGoldText;
 
 	[Header("- Day Night Cycle Settings -")]
@@ -44,7 +60,6 @@ public class GameSceneUiCtrl : MonoBehaviour {
 
 	void FixedUpdate() {
 		switch(gameObject.GetComponent<Animator>().GetInteger("State")){
-			case -1:
 			case 0:
 				SetMainUiValues();
 			break;
@@ -68,7 +83,15 @@ public class GameSceneUiCtrl : MonoBehaviour {
 	}
 
 	private void SetMainUiValues() {
-		CurrentGoldText.text = CurrentGameSystemCtrl.getCurrentGold().ToString("F0");
+		MainCurrentGoldText.text = CurrentGameSystemCtrl.getCurrentGold().ToString("F0");
+		MainUpgradeBuildingStatePanel.SetActive(CurrentGameSystemCtrl.getUpgradeBuildingState());
+		MainUpgradeLandStatePanel.SetActive(CurrentGameSystemCtrl.getUpgradeLandState());
+		MainUpgradeFishingStatePanel.SetActive(CurrentGameSystemCtrl.getUpgradeFishingState());
+		MainUpgradeTechStatePanel.SetActive(CurrentGameSystemCtrl.getUpgradeTechState());
+		MainUpagradeBuildingSecondsText.text = "건물: " + Mathf.Ceil(CurrentGameSystemCtrl.getUpgradeBuildingLeftSeconds()) + "s";
+		MainUpagradeLandSecondsText.text = "토지: " + Mathf.Ceil(CurrentGameSystemCtrl.getUpgradeLandLeftSeconds()) + "s";
+		MainUpagradeFishingSecondsText.text = "낚시: " + Mathf.Ceil(CurrentGameSystemCtrl.getUpgradeFishingLeftSeconds()) + "s";
+		MainUpagradeTechSecondsText.text = "기술: " + Mathf.Ceil(CurrentGameSystemCtrl.getUpgradeTechLeftSeconds()) + "s";
 	}
 
 	private void SetDevUiValues() {
@@ -79,6 +102,10 @@ public class GameSceneUiCtrl : MonoBehaviour {
 		DevCurrentUpgradeFishingLevelText.text = "낚시 레벨: " + CurrentGameSystemCtrl.getUpgradeFishingLevel();
 		DevCurrentUpgradeTechLevelText.text = "기술 레벨: " + CurrentGameSystemCtrl.getUpgradeTechLevel();
 		DevCurrentGoldText.text = "현재 돈: " + CurrentGameSystemCtrl.getCurrentGold();
+		DevCurrentUpgradeBuildingSecondsText.text = "건물 업그레이드 시간: " + CurrentGameSystemCtrl.getUpgradeBuildingLeftSeconds().ToString("F2") + "s";
+		DevCurrentUpgradeLandSecondsText.text = "토지 업그레이드 시간: " + CurrentGameSystemCtrl.getUpgradeLandLeftSeconds().ToString("F2") + "s";
+		DevCurrentUpgradeFishingSecondsText.text = "낚시 업그레이드 시간: " + CurrentGameSystemCtrl.getUpgradeFishingLeftSeconds().ToString("F2") + "s";
+		DevCurrentUpgradeTechSecondsText.text = "기술 업그레이드 시간: " + CurrentGameSystemCtrl.getUpgradeTechLeftSeconds().ToString("F2") + "s";
 	}
 
 	private void SetUpgradeUiValues() {
@@ -91,6 +118,10 @@ public class GameSceneUiCtrl : MonoBehaviour {
 		UpgradeCurrentFishingCostText.text = CurrentGameSystemCtrl.getUpgradeFishingCost().ToString();
 		UpgradeCurrentTechLevelText.text = CurrentGameSystemCtrl.getUpgradeTechLevel().ToString();
 		UpgradeCurrentTechCostText.text = CurrentGameSystemCtrl.getUpgradeTechCost().ToString();
+		UpgradeBuildingButton.interactable = !CurrentGameSystemCtrl.getUpgradeBuildingState();
+		UpgradeLandButton.interactable = !CurrentGameSystemCtrl.getUpgradeLandState();
+		UpgradeFishingButton.interactable = !CurrentGameSystemCtrl.getUpgradeFishingState();
+		UpgradeTechButton.interactable = !CurrentGameSystemCtrl.getUpgradeTechState();
 	}
 
 	private void InitDayNightCycle() {
