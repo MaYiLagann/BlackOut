@@ -37,6 +37,7 @@ public class GameSceneUiCtrl : MonoBehaviour {
 	public Button UpgradeTechButton;
 
 	[Header("- Dev Settings -")]
+	public Text DevCurrentVersionText;
 	public Text DevCurrentDayProgressText;
 	public Text DevCurrentDaySurvivesText;
 	public Text DevCurrentUpgradeBuildingLevelText;
@@ -129,6 +130,7 @@ public class GameSceneUiCtrl : MonoBehaviour {
 	}
 
 	private void SetDevUiValues() {
+		DevCurrentVersionText.text = "BlackOut 버전: " + Application.version;
 		DevCurrentDayProgressText.text = "하루 진행도: " + (CurrentGameSystemCtrl.getDayProgress() / CurrentGameSystemCtrl.DaySeconds * 100).ToString("F2") + "%";
 		DevCurrentDaySurvivesText.text = "진행된 일수: " + CurrentGameSystemCtrl.getDaySurvives() + "일";
 		DevCurrentUpgradeBuildingLevelText.text = "건물 레벨: " + CurrentGameSystemCtrl.getUpgradeBuildingLevel();
