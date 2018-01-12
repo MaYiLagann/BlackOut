@@ -1,15 +1,16 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
+[Serializable]
 public class UpgradeBuilding {
 	public float ObtainGoldSeconds;
 	public float CostGold;
 	public float CostTime;
 }
 
-[System.Serializable]
+[Serializable]
 public class UpgradeLand {
 	public int MaxPeople;
 	public int SpawnPeopleSeconds;
@@ -17,14 +18,14 @@ public class UpgradeLand {
 	public float CostTime;
 }
 
-[System.Serializable]
+[Serializable]
 public class UpgradeFishing {
 	public int FishType;
 	public float CostGold;
 	public float CostTime;
 }
 
-[System.Serializable]
+[Serializable]
 public class UpgradeTech {
 	public int ActiveState;
 	public float CostGold;
@@ -35,10 +36,13 @@ public class GameSystemCtrl : MonoBehaviour {
 
 	[Header("- Time Settings -")]
 	public float DaySeconds = 600f;
+	public float StartDaySecond = 0f;
 
 	private bool dayRun;
 	private int daySurvives;
 	private float dayProgress;
+
+	private DateTime dayDateTime;
 
 	[Header("- Upgrade Settings -")]
 	public UpgradeBuilding[] UpgradeBuildingData;
@@ -67,7 +71,9 @@ public class GameSystemCtrl : MonoBehaviour {
 	void Awake () {
 		dayRun = true;
 		daySurvives = 1;
-		dayProgress = 0f;
+		dayProgress = StartDaySecond;
+		dayDateTime = new DateTime();
+		dayDateTime = dayDateTime.AddDays(StartDaySecond/DaySeconds);
 		
 		upgradeBuildingLevel = 1;
 		upgradeLandLevel = 1;
@@ -105,6 +111,10 @@ public class GameSystemCtrl : MonoBehaviour {
 
 	public int getDaySurvives() {
 		return daySurvives;
+	}
+
+	public DateTime getDayDateTime() {
+		return dayDateTime;
 	}
 
 	public int getUpgradeBuildingLevel() {
@@ -236,6 +246,7 @@ public class GameSystemCtrl : MonoBehaviour {
 
 		float prev_dayp = dayProgress;
 		dayProgress += Time.deltaTime;
+		dayDateTime = dayDateTime.AddDays(Time.deltaTime/DaySeconds);
 		if(((int)prev_dayp) != ((int)dayProgress)) SecondUpdate();
 
 		if(dayProgress >= DaySeconds){

@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class GameSceneUiCtrl : MonoBehaviour {
 
 	[Header("- Main Settings -")]
+	public Text MainTimeText;
 	public Text MainCurrentGoldText;
 	public GameObject MainUpgradeBuildingStatePanel;
 	public Text MainUpagradeBuildingSecondsText;
@@ -83,6 +84,8 @@ public class GameSceneUiCtrl : MonoBehaviour {
 	}
 
 	private void SetMainUiValues() {
+		System.DateTime date = CurrentGameSystemCtrl.getDayDateTime();
+		MainTimeText.text = date.Month + "월 " + date.Day + "일 " + date.Hour + "시 " + date.Minute + "분";
 		MainCurrentGoldText.text = CurrentGameSystemCtrl.getCurrentGold().ToString("F0");
 		MainUpgradeBuildingStatePanel.SetActive(CurrentGameSystemCtrl.getUpgradeBuildingState());
 		MainUpgradeLandStatePanel.SetActive(CurrentGameSystemCtrl.getUpgradeLandState());
@@ -118,14 +121,18 @@ public class GameSceneUiCtrl : MonoBehaviour {
 		UpgradeCurrentFishingCostText.text = CurrentGameSystemCtrl.getUpgradeFishingCost().ToString();
 		UpgradeCurrentTechLevelText.text = CurrentGameSystemCtrl.getUpgradeTechLevel().ToString();
 		UpgradeCurrentTechCostText.text = CurrentGameSystemCtrl.getUpgradeTechCost().ToString();
-		UpgradeBuildingButton.interactable = !CurrentGameSystemCtrl.getUpgradeBuildingState();
-		UpgradeLandButton.interactable = !CurrentGameSystemCtrl.getUpgradeLandState();
-		UpgradeFishingButton.interactable = !CurrentGameSystemCtrl.getUpgradeFishingState();
-		UpgradeTechButton.interactable = !CurrentGameSystemCtrl.getUpgradeTechState();
+		UpgradeBuildingButton.interactable = !CurrentGameSystemCtrl.getUpgradeBuildingState() && CurrentGameSystemCtrl.getUpgradeBuildingCost() < CurrentGameSystemCtrl.getCurrentGold();
+		UpgradeLandButton.interactable = !CurrentGameSystemCtrl.getUpgradeLandState() && CurrentGameSystemCtrl.getUpgradeLandCost() < CurrentGameSystemCtrl.getCurrentGold();
+		UpgradeFishingButton.interactable = !CurrentGameSystemCtrl.getUpgradeFishingState() && CurrentGameSystemCtrl.getUpgradeFishingCost() < CurrentGameSystemCtrl.getCurrentGold();
+		UpgradeTechButton.interactable = !CurrentGameSystemCtrl.getUpgradeTechState() && CurrentGameSystemCtrl.getUpgradeTechCost() < CurrentGameSystemCtrl.getCurrentGold();
 	}
 
 	private void InitDayNightCycle() {
 		DayNightCycleAnimator.speed = 1/CurrentGameSystemCtrl.DaySeconds;
+		float pr = CurrentGameSystemCtrl.getDayProgress()/CurrentGameSystemCtrl.DaySeconds;
+		if(pr>1)
+			pr-=Mathf.Floor(pr);
+		DayNightCycleAnimator.Play("SpringDayNightCycle", 0, pr);
 	}
 
 	/* Logic Functions */
