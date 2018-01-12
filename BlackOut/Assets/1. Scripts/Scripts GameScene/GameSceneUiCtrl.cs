@@ -7,14 +7,28 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Canvas))]
 public class GameSceneUiCtrl : MonoBehaviour {
 
-	[Header("- Dev Settings -")]
-	public Text CurrentDayProgressText;
-	public Text CurrentDaySurvivesText;
-	public Text CurrentUpgradeBuildingLevelText;
-	public Text CurrentUpgradeLandLevelText;
-	public Text CurrentUpgradeFishingLevelText;
-	public Text CurrentUpgradeTechLevelText;
+	[Header("- Main Settings -")]
 	public Text CurrentGoldText;
+
+	[Header("- Upgrade Settings -")]
+	public Text UpgradeCurrentGoldText;
+	public Text UpgradeCurrentBuildingLevelText;
+	public Text UpgradeCurrentBuildingCostText;
+	public Text UpgradeCurrentLandLevelText;
+	public Text UpgradeCurrentLandCostText;
+	public Text UpgradeCurrentFishingLevelText;
+	public Text UpgradeCurrentFishingCostText;
+	public Text UpgradeCurrentTechLevelText;
+	public Text UpgradeCurrentTechCostText;
+
+	[Header("- Dev Settings -")]
+	public Text DevCurrentDayProgressText;
+	public Text DevCurrentDaySurvivesText;
+	public Text DevCurrentUpgradeBuildingLevelText;
+	public Text DevCurrentUpgradeLandLevelText;
+	public Text DevCurrentUpgradeFishingLevelText;
+	public Text DevCurrentUpgradeTechLevelText;
+	public Text DevCurrentGoldText;
 
 	[Header("- Day Night Cycle Settings -")]
 	public Animator DayNightCycleAnimator;
@@ -25,11 +39,22 @@ public class GameSceneUiCtrl : MonoBehaviour {
 	/* Event Functions */
 
 	void Awake() {
-		SetDayNightCycle();
+		InitDayNightCycle();
 	}
 
 	void FixedUpdate() {
-		SetUiValues();
+		switch(gameObject.GetComponent<Animator>().GetInteger("State")){
+			case -1:
+			case 0:
+				SetMainUiValues();
+			break;
+			case 1:
+				SetDevUiValues();
+			break;
+			case 2:
+				SetUpgradeUiValues();
+			break;
+		}
 	}
 	
 	/* Event Functions */
@@ -42,18 +67,33 @@ public class GameSceneUiCtrl : MonoBehaviour {
 		anim.SetTrigger("Move");
 	}
 
-	private void SetUiValues() {
-		// Develop Only
-		CurrentDayProgressText.text = "하루 진행도: " + (CurrentGameSystemCtrl.getDayProgress() / CurrentGameSystemCtrl.DaySeconds * 100).ToString("F2") + "%";
-		CurrentDaySurvivesText.text = "진행된 일수: " + CurrentGameSystemCtrl.getDaySurvives() + "일";
-		CurrentUpgradeBuildingLevelText.text = "건물 레벨: " + CurrentGameSystemCtrl.getUpgradeBuildingLevel();
-		CurrentUpgradeLandLevelText.text = "토지 레벨: " + CurrentGameSystemCtrl.getUpgradeLandLevel();
-		CurrentUpgradeFishingLevelText.text = "낚시 레벨: " + CurrentGameSystemCtrl.getUpgradeFishingLevel();
-		CurrentUpgradeTechLevelText.text = "기술 레벨: " + CurrentGameSystemCtrl.getUpgradeTechLevel();
-		CurrentGoldText.text = "현재 돈: " + CurrentGameSystemCtrl.getCurrentGold();
+	private void SetMainUiValues() {
+		CurrentGoldText.text = CurrentGameSystemCtrl.getCurrentGold().ToString("F0");
 	}
 
-	private void SetDayNightCycle() {
+	private void SetDevUiValues() {
+		DevCurrentDayProgressText.text = "하루 진행도: " + (CurrentGameSystemCtrl.getDayProgress() / CurrentGameSystemCtrl.DaySeconds * 100).ToString("F2") + "%";
+		DevCurrentDaySurvivesText.text = "진행된 일수: " + CurrentGameSystemCtrl.getDaySurvives() + "일";
+		DevCurrentUpgradeBuildingLevelText.text = "건물 레벨: " + CurrentGameSystemCtrl.getUpgradeBuildingLevel();
+		DevCurrentUpgradeLandLevelText.text = "토지 레벨: " + CurrentGameSystemCtrl.getUpgradeLandLevel();
+		DevCurrentUpgradeFishingLevelText.text = "낚시 레벨: " + CurrentGameSystemCtrl.getUpgradeFishingLevel();
+		DevCurrentUpgradeTechLevelText.text = "기술 레벨: " + CurrentGameSystemCtrl.getUpgradeTechLevel();
+		DevCurrentGoldText.text = "현재 돈: " + CurrentGameSystemCtrl.getCurrentGold();
+	}
+
+	private void SetUpgradeUiValues() {
+		UpgradeCurrentGoldText.text = CurrentGameSystemCtrl.getCurrentGold().ToString("F0");
+		UpgradeCurrentBuildingLevelText.text = CurrentGameSystemCtrl.getUpgradeBuildingLevel().ToString();
+		UpgradeCurrentBuildingCostText.text = CurrentGameSystemCtrl.getUpgradeBuildingCost().ToString();
+		UpgradeCurrentLandLevelText.text = CurrentGameSystemCtrl.getUpgradeLandLevel().ToString();
+		UpgradeCurrentLandCostText.text = CurrentGameSystemCtrl.getUpgradeLandCost().ToString();
+		UpgradeCurrentFishingLevelText.text = CurrentGameSystemCtrl.getUpgradeFishingLevel().ToString();
+		UpgradeCurrentFishingCostText.text = CurrentGameSystemCtrl.getUpgradeFishingCost().ToString();
+		UpgradeCurrentTechLevelText.text = CurrentGameSystemCtrl.getUpgradeTechLevel().ToString();
+		UpgradeCurrentTechCostText.text = CurrentGameSystemCtrl.getUpgradeTechCost().ToString();
+	}
+
+	private void InitDayNightCycle() {
 		DayNightCycleAnimator.speed = 1/CurrentGameSystemCtrl.DaySeconds;
 	}
 

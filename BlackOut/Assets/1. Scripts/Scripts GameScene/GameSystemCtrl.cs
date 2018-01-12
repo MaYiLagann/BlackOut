@@ -92,14 +92,33 @@ public class GameSystemCtrl : MonoBehaviour {
 	public int getUpgradeBuildingLevel() {
 		return upgradeBuildingLevel;
 	}
+
+	public float getUpgradeBuildingCost() {
+		return UpgradeBuildingData.Length < upgradeBuildingLevel? -1f : UpgradeBuildingData[upgradeBuildingLevel].CostGold;
+	}
+
 	public int getUpgradeLandLevel() {
 		return upgradeLandLevel;
 	}
+	
+	public float getUpgradeLandCost() {
+		return UpgradeLandData.Length < upgradeLandLevel? -1f : UpgradeLandData[upgradeLandLevel].CostGold;
+	}
+
 	public int getUpgradeFishingLevel() {
 		return upgradeFishingLevel;
 	}
+	
+	public float getUpgradeFishingCost() {
+		return UpgradeFishingData.Length < upgradeFishingLevel? -1f : UpgradeFishingData[upgradeFishingLevel].CostGold;
+	}
+
 	public int getUpgradeTechLevel() {
 		return upgradeTechLevel;
+	}
+	
+	public float getUpgradeTechCost() {
+		return UpgradeTechData.Length < upgradeTechLevel? -1f : UpgradeTechData[upgradeTechLevel].CostGold;
 	}
 
 	public float getCurrentGold(){
@@ -111,7 +130,7 @@ public class GameSystemCtrl : MonoBehaviour {
 	/* Logic Functions */
 
 	public void setUpgradeBuildingLevel() {
-		if(UpgradeBuildingData.Length < upgradeBuildingLevel+1) return;
+		if(UpgradeBuildingData.Length < upgradeBuildingLevel) return;
 		if(UpgradeBuildingData[upgradeBuildingLevel].CostGold > currentGold) return;
 		
 		currentGold -= UpgradeBuildingData[upgradeBuildingLevel].CostGold;
@@ -119,7 +138,7 @@ public class GameSystemCtrl : MonoBehaviour {
 	}
 	
 	public void setUpgradeLandLevel() {
-		if(UpgradeLandData.Length < upgradeLandLevel+1) return;
+		if(UpgradeLandData.Length < upgradeLandLevel) return;
 		if(UpgradeLandData[upgradeLandLevel].CostGold > currentGold) return;
 		
 		currentGold -= UpgradeLandData[upgradeLandLevel].CostGold;
@@ -127,7 +146,7 @@ public class GameSystemCtrl : MonoBehaviour {
 	}
 	
 	public void setUpgradeFishingLevel() {
-		if(UpgradeFishingData.Length < upgradeFishingLevel+1) return;
+		if(UpgradeFishingData.Length < upgradeFishingLevel) return;
 		if(UpgradeFishingData[upgradeFishingLevel].CostGold > currentGold) return;
 		
 		currentGold -= UpgradeFishingData[upgradeFishingLevel].CostGold;
@@ -135,11 +154,19 @@ public class GameSystemCtrl : MonoBehaviour {
 	}
 	
 	public void setUpgradeTechLevel() {
-		if(UpgradeTechData.Length < upgradeTechLevel+1) return;
+		if(UpgradeTechData.Length < upgradeTechLevel) return;
 		if(UpgradeTechData[upgradeTechLevel].CostGold > currentGold) return;
 		
 		currentGold -= UpgradeTechData[upgradeTechLevel].CostGold;
 		upgradeTechLevel++;
+	}
+
+	public void toggleDayRun() {
+		dayRun = !dayRun;
+	}
+
+	public void toggleDayRun(bool run) {
+		dayRun = run;
 	}
 
 	private void RunTime() {
