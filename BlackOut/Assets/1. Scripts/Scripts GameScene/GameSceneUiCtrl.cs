@@ -10,11 +10,11 @@ public class GameSceneUiCtrl : MonoBehaviour {
 	[Header("- Main Settings -")]
 	public Text MainTimeText;
 	public Text MainCurrentGoldText;
+	public Text MainUpgradeBuildingSecondsText;
+	public Text MainUpgradeLandSecondsText;
+	public Text MainUpgradeFishingSecondsText;
+	public Text MainUpgradeTechSecondsText;
 	public GameObject MainUpgradeBuildingStatePanel;
-	public Text MainUpagradeBuildingSecondsText;
-	public Text MainUpagradeLandSecondsText;
-	public Text MainUpagradeFishingSecondsText;
-	public Text MainUpagradeTechSecondsText;
 	public GameObject MainUpgradeLandStatePanel;
 	public GameObject MainUpgradeFishingStatePanel;
 	public GameObject MainUpgradeTechStatePanel;
@@ -91,10 +91,10 @@ public class GameSceneUiCtrl : MonoBehaviour {
 		MainUpgradeLandStatePanel.SetActive(CurrentGameSystemCtrl.getUpgradeLandState());
 		MainUpgradeFishingStatePanel.SetActive(CurrentGameSystemCtrl.getUpgradeFishingState());
 		MainUpgradeTechStatePanel.SetActive(CurrentGameSystemCtrl.getUpgradeTechState());
-		MainUpagradeBuildingSecondsText.text = "건물: " + Mathf.Ceil(CurrentGameSystemCtrl.getUpgradeBuildingLeftSeconds()) + "s";
-		MainUpagradeLandSecondsText.text = "토지: " + Mathf.Ceil(CurrentGameSystemCtrl.getUpgradeLandLeftSeconds()) + "s";
-		MainUpagradeFishingSecondsText.text = "낚시: " + Mathf.Ceil(CurrentGameSystemCtrl.getUpgradeFishingLeftSeconds()) + "s";
-		MainUpagradeTechSecondsText.text = "기술: " + Mathf.Ceil(CurrentGameSystemCtrl.getUpgradeTechLeftSeconds()) + "s";
+		MainUpgradeBuildingSecondsText.text = "건물: " + Mathf.Ceil(CurrentGameSystemCtrl.getUpgradeBuildingLeftSeconds()) + "s";
+		MainUpgradeLandSecondsText.text = "토지: " + Mathf.Ceil(CurrentGameSystemCtrl.getUpgradeLandLeftSeconds()) + "s";
+		MainUpgradeFishingSecondsText.text = "낚시: " + Mathf.Ceil(CurrentGameSystemCtrl.getUpgradeFishingLeftSeconds()) + "s";
+		MainUpgradeTechSecondsText.text = "기술: " + Mathf.Ceil(CurrentGameSystemCtrl.getUpgradeTechLeftSeconds()) + "s";
 	}
 
 	private void SetDevUiValues() {

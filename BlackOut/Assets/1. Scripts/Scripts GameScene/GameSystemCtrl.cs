@@ -66,6 +66,9 @@ public class GameSystemCtrl : MonoBehaviour {
 	public float StartGold = 0;
 	private float currentGold;
 
+	[Header("- Require Components -")]
+	public BuildingScaler CurrentBuildingScaler;
+
 	/* Event Functions */
 
 	void Awake () {
@@ -91,6 +94,8 @@ public class GameSystemCtrl : MonoBehaviour {
 		upgradeTechLeftSeconds = 0f;
 
 		currentGold = StartGold;
+
+		CurrentBuildingScaler.SetScale(upgradeBuildingLevel);
 	}
 	
 	void Update () {
@@ -259,6 +264,7 @@ public class GameSystemCtrl : MonoBehaviour {
 			if(upgradeBuildingLeftSeconds < 0){
 				upgradeBuildingState = false;
 				upgradeBuildingLevel++;
+				CurrentBuildingScaler.SetScale(upgradeBuildingLevel);
 			}
 		}
 		if(upgradeLandState) {
