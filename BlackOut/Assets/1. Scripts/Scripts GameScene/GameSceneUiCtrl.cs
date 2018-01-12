@@ -60,6 +60,7 @@ public class GameSceneUiCtrl : MonoBehaviour {
 	}
 
 	void FixedUpdate() {
+
 		switch(gameObject.GetComponent<Animator>().GetInteger("State")){
 			case 0:
 				SetMainUiValues();
@@ -71,6 +72,13 @@ public class GameSceneUiCtrl : MonoBehaviour {
 				SetUpgradeUiValues();
 			break;
 		}
+
+		if(CurrentGameSystemCtrl.getDayRun()) {
+			DayNightCycleAnimator.speed = 1/CurrentGameSystemCtrl.DaySeconds;
+		} else {
+			DayNightCycleAnimator.speed = 0;
+		}
+
 	}
 	
 	/* Event Functions */

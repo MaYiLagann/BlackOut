@@ -110,6 +110,10 @@ public class GameSystemCtrl : MonoBehaviour {
 
 	/* Get Functions */
 
+	public bool getDayRun() {
+		return dayRun;
+	}
+
 	public float getDayProgress() {
 		return dayProgress;
 	}
