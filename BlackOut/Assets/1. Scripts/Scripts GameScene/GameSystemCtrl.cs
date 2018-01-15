@@ -66,6 +66,10 @@ public class GameSystemCtrl : MonoBehaviour {
 	public float StartGold = 0;
 	private float currentGold;
 
+	[Header("- People Settings -")]
+	public int StartPeople = 0;
+	private int currentPeople;
+
 	[Header("- Require Components -")]
 	public BuildingScaler CurrentBuildingScaler;
 
@@ -94,6 +98,8 @@ public class GameSystemCtrl : MonoBehaviour {
 		upgradeTechLeftSeconds = 0f;
 
 		currentGold = StartGold;
+
+		currentPeople = StartPeople;
 
 		CurrentBuildingScaler.SetScale(upgradeBuildingLevel);
 	}
