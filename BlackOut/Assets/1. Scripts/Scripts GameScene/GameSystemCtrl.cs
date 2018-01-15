@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/* Upgrade Class */
+
 [Serializable]
 public class UpgradeBuilding {
 	public float ObtainGoldSeconds;
@@ -31,6 +33,100 @@ public class UpgradeTech {
 	public float CostGold;
 	public float CostTime;
 }
+
+/* Upgrade Class */
+
+/* Weather Class */
+
+[Serializable]
+public class WeatherRain {
+	[Range(0, 1)]
+	public float PercentageSpring;
+	[Range(0, 1)]
+	public float PercentageSummer;
+	[Range(0, 1)]
+	public float PercentageFall;
+	[Range(0, 1)]
+	public float PercentageWinter;
+	public float IncreasePeoplePercent;
+}
+
+[Serializable]
+public class WeatherSnow {
+	[Range(0, 1)]
+	public float PercentageSpring;
+	[Range(0, 1)]
+	public float PercentageSummer;
+	[Range(0, 1)]
+	public float PercentageFall;
+	[Range(0, 1)]
+	public float PercentageWinter;
+	public float IncreasePeoplePercent;
+}
+
+/* Weather Class */
+
+/* Disaster Class */
+
+[Serializable]
+public class DisasterLevel {
+	public int BoundaryLevel;
+	public float DurationDays;
+}
+
+[Serializable]
+public class DisasterDrought {
+	[Range(0, 1)]
+	public float PercentageSpring;
+	[Range(0, 1)]
+	public float PercentageSummer;
+	[Range(0, 1)]
+	public float PercentageFall;
+	[Range(0, 1)]
+	public float PercentageWinter;
+	public int[] DamageLevel;
+}
+
+[Serializable]
+public class DisasterFlood {
+	[Range(0, 1)]
+	public float PercentageSpring;
+	[Range(0, 1)]
+	public float PercentageSummer;
+	[Range(0, 1)]
+	public float PercentageFall;
+	[Range(0, 1)]
+	public float PercentageWinter;
+	public int[] DamageLevel;
+}
+
+[Serializable]
+public class DisasterTyphoon {
+	[Range(0, 1)]
+	public float PercentageSpring;
+	[Range(0, 1)]
+	public float PercentageSummer;
+	[Range(0, 1)]
+	public float PercentageFall;
+	[Range(0, 1)]
+	public float PercentageWinter;
+	public int[] DamageLevel;
+}
+
+[Serializable]
+public class DisasterHeavySnow {
+	[Range(0, 1)]
+	public float PercentageSpring;
+	[Range(0, 1)]
+	public float PercentageSummer;
+	[Range(0, 1)]
+	public float PercentageFall;
+	[Range(0, 1)]
+	public float PercentageWinter;
+	public int[] DamageLevel;
+}
+
+/* Disaster Class */
 
 public class GameSystemCtrl : MonoBehaviour {
 
@@ -62,6 +158,17 @@ public class GameSystemCtrl : MonoBehaviour {
 	private bool upgradeTechState;
 	private float upgradeTechLeftSeconds;
 
+	[Header("- Weather Settings -")]
+	public WeatherRain WeatherRainData;
+	public WeatherSnow WeatherSnowData;
+
+	[Header("- Disaster Settings -")]
+	public DisasterLevel[] DisasterLevelData;
+	public DisasterDrought DisasterDroughtData;
+	public DisasterFlood DisasterFloodData;
+	public DisasterTyphoon DisasterTyphoonData;
+	public DisasterHeavySnow DisasterHeavySnowData;
+
 	[Header("- Gold Settings -")]
 	public float StartGold = 0;
 	private float currentGold;
@@ -70,6 +177,7 @@ public class GameSystemCtrl : MonoBehaviour {
 	public int StartPeople = 0;
 	private int currentPeople;
 	private float currentPeopleLeftSeconds;
+	private float speedPeopleSeconds;
 
 	[Header("- Require Components -")]
 	public BuildingScaler CurrentBuildingScaler;
@@ -101,7 +209,8 @@ public class GameSystemCtrl : MonoBehaviour {
 		currentGold = StartGold;
 
 		currentPeople = StartPeople;
-		currentPeopleLeftSeconds = 0;
+		currentPeopleLeftSeconds = 0f;
+		speedPeopleSeconds = 1f;
 
 		CurrentBuildingScaler.SetScale(upgradeBuildingLevel);
 	}
@@ -112,14 +221,6 @@ public class GameSystemCtrl : MonoBehaviour {
 
 	void SecondUpdate () {
 		currentGold += UpgradeBuildingData[upgradeBuildingLevel-1].ObtainGoldSeconds;
-
-		if(currentPeopleLeftSeconds > 0)
-			currentPeopleLeftSeconds -= 1f;
-		else if(currentPeople+1 <= getCurrentMaxPeople()) {
-			currentPeople++;
-			if(currentPeople+1 <= getCurrentMaxPeople())
-				currentPeopleLeftSeconds = getSpawnPeopleSeconds();
-		}
 
 		if(upgradeBuildingState) {
 			upgradeBuildingLeftSeconds -= 1f;
@@ -329,6 +430,15 @@ public class GameSystemCtrl : MonoBehaviour {
 		if(dayProgress >= DaySeconds){
 			dayProgress -= DaySeconds;
 			daySurvives++;
+		}
+
+		
+		if(currentPeopleLeftSeconds > 0)
+			currentPeopleLeftSeconds -= Time.deltaTime * speedPeopleSeconds;
+		else if(currentPeople+1 <= getCurrentMaxPeople()) {
+			currentPeople++;
+			if(currentPeople+1 <= getCurrentMaxPeople())
+				currentPeopleLeftSeconds = getSpawnPeopleSeconds();
 		}
 	}
 
