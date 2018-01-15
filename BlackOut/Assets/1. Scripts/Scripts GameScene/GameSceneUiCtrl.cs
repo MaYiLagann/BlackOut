@@ -14,6 +14,8 @@ public class GameSceneUiCtrl : MonoBehaviour {
 
 	[Header("- Main Settings -")]
 	public Text MainCurrentPeopleText;
+	public Text MainCurrentPeopleSpawnSecondsText;
+	public GameObject MainCurrentPeopleSpawnSecondsPanel;
 
 	[Header("- Upgrade Settings -")]
 	public Text UpgradeCurrentBuildingLevelText;
@@ -110,7 +112,9 @@ public class GameSceneUiCtrl : MonoBehaviour {
 	}
 
 	private void SetMainUiValues() {
-		MainCurrentPeopleText.text = CurrentGameSystemCtrl.getCurrentPeople() + "명";
+		MainCurrentPeopleText.text = CurrentGameSystemCtrl.getCurrentPeople() + "/" + CurrentGameSystemCtrl.getCurrentMaxPeople() + " 명";
+		MainCurrentPeopleSpawnSecondsPanel.SetActive(CurrentGameSystemCtrl.getCurrentPeopleSeconds()>0);
+		MainCurrentPeopleSpawnSecondsText.text = CurrentGameSystemCtrl.getCurrentPeopleSeconds().ToString("F0") + "s";
 	}
 
 	private void SetDevUiValues() {
@@ -122,7 +126,7 @@ public class GameSceneUiCtrl : MonoBehaviour {
 		DevCurrentUpgradeFishingLevelText.text = "낚시 레벨: " + CurrentGameSystemCtrl.getUpgradeFishingLevel();
 		DevCurrentUpgradeTechLevelText.text = "기술 레벨: " + CurrentGameSystemCtrl.getUpgradeTechLevel();
 		DevCurrentGoldText.text = "현재 돈: " + CurrentGameSystemCtrl.getCurrentGold() + "G";
-		DevCurrentPeopleText.text = "현재 인구: " + CurrentGameSystemCtrl.getCurrentPeople() + "명";
+		DevCurrentPeopleText.text = "현재 인구: " + CurrentGameSystemCtrl.getCurrentPeople() + "/" + CurrentGameSystemCtrl.getCurrentMaxPeople() + " 명";
 		DevCurrentPeopleSecondsText.text = "인구 증가 시간: " + CurrentGameSystemCtrl.getCurrentPeopleSeconds().ToString("F0") + "s";
 	}
 

@@ -129,6 +129,8 @@ public class GameSystemCtrl : MonoBehaviour {
 	[Header("- Time Settings -")]
 	public float DaySeconds = 600f;
 	public float StartDaySecond = 0f;
+	[Range(0, 100)]
+	public float DaySpeed = 1f;
 
 	private bool dayRun;
 	private int daySurvives;
@@ -349,11 +351,13 @@ public class GameSystemCtrl : MonoBehaviour {
 	private void RunTime() {
 		if(!dayRun) return;
 
+		float deltaTime = Time.deltaTime * DaySpeed;
+
 		float prevDayProgress = dayProgress;
 		DateTime prevDayDateTime = dayDateTime;
 
-		dayProgress += Time.deltaTime;
-		dayDateTime = dayDateTime.AddDays(Time.deltaTime/DaySeconds);
+		dayProgress += deltaTime;
+		dayDateTime = dayDateTime.AddDays(deltaTime/DaySeconds);
 
 		if(((int)prevDayProgress) != ((int)dayProgress)) SecondUpdate();
 		if(prevDayDateTime.Day != dayDateTime.Day) DayUpdate();
@@ -366,7 +370,7 @@ public class GameSystemCtrl : MonoBehaviour {
 		}
 		
 		if(currentPeopleLeftSeconds > 0)
-			currentPeopleLeftSeconds -= Time.deltaTime * speedPeopleSeconds;
+			currentPeopleLeftSeconds -= deltaTime * speedPeopleSeconds;
 		else if(currentPeople+1 <= getCurrentMaxPeople()) {
 			currentPeople++;
 			if(currentPeople+1 <= getCurrentMaxPeople())
