@@ -69,6 +69,7 @@ public class GameSystemCtrl : MonoBehaviour {
 	[Header("- People Settings -")]
 	public int StartPeople = 0;
 	private int currentPeople;
+	private float currentPeopleLeftSeconds;
 
 	[Header("- Require Components -")]
 	public BuildingScaler CurrentBuildingScaler;
@@ -100,6 +101,7 @@ public class GameSystemCtrl : MonoBehaviour {
 		currentGold = StartGold;
 
 		currentPeople = StartPeople;
+		currentPeopleLeftSeconds = getSpawnPeopleSeconds();
 
 		CurrentBuildingScaler.SetScale(upgradeBuildingLevel);
 	}
@@ -110,6 +112,44 @@ public class GameSystemCtrl : MonoBehaviour {
 
 	void SecondUpdate () {
 		currentGold += UpgradeBuildingData[upgradeBuildingLevel-1].ObtainGoldSeconds;
+		
+		if(currentPeopleLeftSeconds > 0)
+			currentPeopleLeftSeconds -= 1f;
+		else if(currentPeople+1 <= getCurrentMaxPeople()) {
+			currentPeople++;
+			if(currentPeople+1 <= getCurrentMaxPeople())
+				currentPeopleLeftSeconds = getSpawnPeopleSeconds();
+		}
+
+		if(upgradeBuildingState) {
+			upgradeBuildingLeftSeconds -= 1f;
+			if(upgradeBuildingLeftSeconds < 0){
+				upgradeBuildingState = false;
+				upgradeBuildingLevel++;
+				CurrentBuildingScaler.SetScale(upgradeBuildingLevel);
+			}
+		}
+		if(upgradeLandState) {
+			upgradeLandLeftSeconds -= 1f;
+			if(upgradeLandLeftSeconds < 0){
+				upgradeLandState = false;
+				upgradeLandLevel++;
+			}
+		}
+		if(upgradeFishingState) {
+			upgradeFishingLeftSeconds -= 1f;
+			if(upgradeFishingLeftSeconds < 0){
+				upgradeFishingState = false;
+				upgradeFishingLevel++;
+			}
+		}
+		if(upgradeTechState) {
+			upgradeTechLeftSeconds -= 1f;
+			if(upgradeTechLeftSeconds < 0){
+				upgradeTechState = false;
+				upgradeTechLevel++;
+			}
+		}
 	}
 
 	/* Event Functions */
@@ -137,7 +177,7 @@ public class GameSystemCtrl : MonoBehaviour {
 	}
 
 	public float getUpgradeBuildingCost() {
-		return UpgradeBuildingData.Length < upgradeBuildingLevel? -1f : UpgradeBuildingData[upgradeBuildingLevel].CostGold;
+		return UpgradeBuildingData.Length < upgradeBuildingLevel? -1f : UpgradeBuildingData[upgradeBuildingLevel-1].CostGold;
 	}
 
 	public bool getUpgradeBuildingState() {
@@ -153,7 +193,7 @@ public class GameSystemCtrl : MonoBehaviour {
 	}
 	
 	public float getUpgradeLandCost() {
-		return UpgradeLandData.Length < upgradeLandLevel? -1f : UpgradeLandData[upgradeLandLevel].CostGold;
+		return UpgradeLandData.Length < upgradeLandLevel? -1f : UpgradeLandData[upgradeLandLevel-1].CostGold;
 	}
 
 	public bool getUpgradeLandState() {
@@ -169,7 +209,7 @@ public class GameSystemCtrl : MonoBehaviour {
 	}
 	
 	public float getUpgradeFishingCost() {
-		return UpgradeFishingData.Length < upgradeFishingLevel? -1f : UpgradeFishingData[upgradeFishingLevel].CostGold;
+		return UpgradeFishingData.Length < upgradeFishingLevel? -1f : UpgradeFishingData[upgradeFishingLevel-1].CostGold;
 	}
 
 	public bool getUpgradeFishingState() {
@@ -185,7 +225,7 @@ public class GameSystemCtrl : MonoBehaviour {
 	}
 	
 	public float getUpgradeTechCost() {
-		return UpgradeTechData.Length < upgradeTechLevel? -1f : UpgradeTechData[upgradeTechLevel].CostGold;
+		return UpgradeTechData.Length < upgradeTechLevel? -1f : UpgradeTechData[upgradeTechLevel-1].CostGold;
 	}
 
 	public bool getUpgradeTechState() {
@@ -196,8 +236,24 @@ public class GameSystemCtrl : MonoBehaviour {
 		return upgradeTechLeftSeconds;
 	}
 
-	public float getCurrentGold(){
+	public float getCurrentGold() {
 		return currentGold;
+	}
+
+	public int getCurrentPeople() {
+		return currentPeople;
+	}
+
+	public int getCurrentMaxPeople() {
+		return UpgradeLandData.Length < upgradeLandLevel? -1 : UpgradeLandData[upgradeLandLevel-1].MaxPeople;
+	}
+
+	public float getCurrentPeopleSeconds() {
+		return currentPeopleLeftSeconds;
+	}
+
+	public float getSpawnPeopleSeconds() {
+		return UpgradeLandData.Length < upgradeLandLevel? -1f : UpgradeLandData[upgradeLandLevel-1].SpawnPeopleSeconds;
 	}
 
 	/* Get Functions */
@@ -211,45 +267,45 @@ public class GameSystemCtrl : MonoBehaviour {
 	public void setUpgradeBuildingLevel() {
 		if(upgradeBuildingState) return;
 		if(UpgradeBuildingData.Length < upgradeBuildingLevel) return;
-		if(UpgradeBuildingData[upgradeBuildingLevel].CostGold > currentGold) return;
+		if(UpgradeBuildingData[upgradeBuildingLevel-1].CostGold > currentGold) return;
 		
-		currentGold -= UpgradeBuildingData[upgradeBuildingLevel].CostGold;
+		currentGold -= UpgradeBuildingData[upgradeBuildingLevel-1].CostGold;
 
 		upgradeBuildingState = true;
-		upgradeBuildingLeftSeconds = UpgradeBuildingData[upgradeBuildingLevel].CostTime;
+		upgradeBuildingLeftSeconds = UpgradeBuildingData[upgradeBuildingLevel-1].CostTime;
 	}
 	
 	public void setUpgradeLandLevel() {
 		if(upgradeLandState) return;
 		if(UpgradeLandData.Length < upgradeLandLevel) return;
-		if(UpgradeLandData[upgradeLandLevel].CostGold > currentGold) return;
+		if(UpgradeLandData[upgradeLandLevel-1].CostGold > currentGold) return;
 		
-		currentGold -= UpgradeLandData[upgradeLandLevel].CostGold;
+		currentGold -= UpgradeLandData[upgradeLandLevel-1].CostGold;
 		
 		upgradeLandState = true;
-		upgradeLandLeftSeconds = UpgradeLandData[upgradeLandLevel].CostTime;
+		upgradeLandLeftSeconds = UpgradeLandData[upgradeLandLevel-1].CostTime;
 	}
 	
 	public void setUpgradeFishingLevel() {
 		if(upgradeFishingState) return;
 		if(UpgradeFishingData.Length < upgradeFishingLevel) return;
-		if(UpgradeFishingData[upgradeFishingLevel].CostGold > currentGold) return;
+		if(UpgradeFishingData[upgradeFishingLevel-1].CostGold > currentGold) return;
 		
-		currentGold -= UpgradeFishingData[upgradeFishingLevel].CostGold;
+		currentGold -= UpgradeFishingData[upgradeFishingLevel-1].CostGold;
 		
 		upgradeFishingState = true;
-		upgradeFishingLeftSeconds = UpgradeFishingData[upgradeFishingLevel].CostTime;
+		upgradeFishingLeftSeconds = UpgradeFishingData[upgradeFishingLevel-1].CostTime;
 	}
 	
 	public void setUpgradeTechLevel() {
 		if(upgradeTechState) return;
 		if(UpgradeTechData.Length < upgradeTechLevel) return;
-		if(UpgradeTechData[upgradeTechLevel].CostGold > currentGold) return;
+		if(UpgradeTechData[upgradeTechLevel-1].CostGold > currentGold) return;
 		
-		currentGold -= UpgradeTechData[upgradeTechLevel].CostGold;
+		currentGold -= UpgradeTechData[upgradeTechLevel-1].CostGold;
 		
 		upgradeTechState = true;
-		upgradeTechLeftSeconds = UpgradeTechData[upgradeTechLevel].CostTime;
+		upgradeTechLeftSeconds = UpgradeTechData[upgradeTechLevel-1].CostTime;
 	}
 
 	public void toggleDayRun() {
@@ -271,36 +327,6 @@ public class GameSystemCtrl : MonoBehaviour {
 		if(dayProgress >= DaySeconds){
 			dayProgress -= DaySeconds;
 			daySurvives++;
-		}
-
-		if(upgradeBuildingState) {
-			upgradeBuildingLeftSeconds -= Time.deltaTime;
-			if(upgradeBuildingLeftSeconds < 0){
-				upgradeBuildingState = false;
-				upgradeBuildingLevel++;
-				CurrentBuildingScaler.SetScale(upgradeBuildingLevel);
-			}
-		}
-		if(upgradeLandState) {
-			upgradeLandLeftSeconds -= Time.deltaTime;
-			if(upgradeLandLeftSeconds < 0){
-				upgradeLandState = false;
-				upgradeLandLevel++;
-			}
-		}
-		if(upgradeFishingState) {
-			upgradeFishingLeftSeconds -= Time.deltaTime;
-			if(upgradeFishingLeftSeconds < 0){
-				upgradeFishingState = false;
-				upgradeFishingLevel++;
-			}
-		}
-		if(upgradeTechState) {
-			upgradeTechLeftSeconds -= Time.deltaTime;
-			if(upgradeTechLeftSeconds < 0){
-				upgradeTechState = false;
-				upgradeTechLevel++;
-			}
 		}
 	}
 

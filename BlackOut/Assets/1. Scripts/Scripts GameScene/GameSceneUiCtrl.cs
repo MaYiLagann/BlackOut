@@ -13,6 +13,7 @@ public class GameSceneUiCtrl : MonoBehaviour {
 
 
 	[Header("- Main Settings -")]
+	public Text MainCurrentPeopleText;
 	public Text MainUpgradeBuildingSecondsText;
 	public Text MainUpgradeLandSecondsText;
 	public Text MainUpgradeFishingSecondsText;
@@ -49,6 +50,8 @@ public class GameSceneUiCtrl : MonoBehaviour {
 	public Text DevCurrentUpgradeFishingSecondsText;
 	public Text DevCurrentUpgradeTechSecondsText;
 	public Text DevCurrentGoldText;
+	public Text DevCurrentPeopleText;
+	public Text DevCurrentPeopleSecondsText;
 
 	[Header("- Day Night Cycle Settings -")]
 	public Animator DayNightCycleAnimator;
@@ -119,6 +122,7 @@ public class GameSceneUiCtrl : MonoBehaviour {
 	}
 
 	private void SetMainUiValues() {
+		MainCurrentPeopleText.text = CurrentGameSystemCtrl.getCurrentPeople() + "명";
 		MainUpgradeBuildingStatePanel.SetActive(CurrentGameSystemCtrl.getUpgradeBuildingState());
 		MainUpgradeLandStatePanel.SetActive(CurrentGameSystemCtrl.getUpgradeLandState());
 		MainUpgradeFishingStatePanel.SetActive(CurrentGameSystemCtrl.getUpgradeFishingState());
@@ -137,11 +141,13 @@ public class GameSceneUiCtrl : MonoBehaviour {
 		DevCurrentUpgradeLandLevelText.text = "토지 레벨: " + CurrentGameSystemCtrl.getUpgradeLandLevel();
 		DevCurrentUpgradeFishingLevelText.text = "낚시 레벨: " + CurrentGameSystemCtrl.getUpgradeFishingLevel();
 		DevCurrentUpgradeTechLevelText.text = "기술 레벨: " + CurrentGameSystemCtrl.getUpgradeTechLevel();
-		DevCurrentGoldText.text = "현재 돈: " + CurrentGameSystemCtrl.getCurrentGold();
-		DevCurrentUpgradeBuildingSecondsText.text = "건물 업그레이드 시간: " + CurrentGameSystemCtrl.getUpgradeBuildingLeftSeconds().ToString("F2") + "s";
-		DevCurrentUpgradeLandSecondsText.text = "토지 업그레이드 시간: " + CurrentGameSystemCtrl.getUpgradeLandLeftSeconds().ToString("F2") + "s";
-		DevCurrentUpgradeFishingSecondsText.text = "낚시 업그레이드 시간: " + CurrentGameSystemCtrl.getUpgradeFishingLeftSeconds().ToString("F2") + "s";
-		DevCurrentUpgradeTechSecondsText.text = "기술 업그레이드 시간: " + CurrentGameSystemCtrl.getUpgradeTechLeftSeconds().ToString("F2") + "s";
+		DevCurrentGoldText.text = "현재 돈: " + CurrentGameSystemCtrl.getCurrentGold() + "G";
+		DevCurrentPeopleText.text = "현재 인구: " + CurrentGameSystemCtrl.getCurrentPeople() + "명";
+		DevCurrentPeopleSecondsText.text = "인구 증가 시간: " + CurrentGameSystemCtrl.getCurrentPeopleSeconds() + "s";
+		DevCurrentUpgradeBuildingSecondsText.text = "건물 업그레이드 시간: " + CurrentGameSystemCtrl.getUpgradeBuildingLeftSeconds() + "s";
+		DevCurrentUpgradeLandSecondsText.text = "토지 업그레이드 시간: " + CurrentGameSystemCtrl.getUpgradeLandLeftSeconds() + "s";
+		DevCurrentUpgradeFishingSecondsText.text = "낚시 업그레이드 시간: " + CurrentGameSystemCtrl.getUpgradeFishingLeftSeconds() + "s";
+		DevCurrentUpgradeTechSecondsText.text = "기술 업그레이드 시간: " + CurrentGameSystemCtrl.getUpgradeTechLeftSeconds() + "s";
 	}
 
 	private void SetUpgradeUiValues() {
