@@ -160,7 +160,9 @@ public class GameSystemCtrl : MonoBehaviour {
 
 	[Header("- Weather Settings -")]
 	public WeatherRain WeatherRainData;
+	private bool weatherRainState;
 	public WeatherSnow WeatherSnowData;
+	private bool weatherSnowState;
 
 	[Header("- Disaster Settings -")]
 	public DisasterLevel[] DisasterLevelData;
@@ -205,6 +207,9 @@ public class GameSystemCtrl : MonoBehaviour {
 		upgradeLandLeftSeconds = 0f;
 		upgradeFishingLeftSeconds = 0f;
 		upgradeTechLeftSeconds = 0f;
+
+		weatherRainState = false;
+		weatherSnowState = false;
 
 		currentGold = StartGold;
 
@@ -251,6 +256,18 @@ public class GameSystemCtrl : MonoBehaviour {
 				upgradeTechLevel++;
 			}
 		}
+	}
+
+	void DayUpdate () {
+		
+	}
+	
+	void MonthUpdate () {
+
+	}
+
+	void YearUpdate () {
+
 	}
 
 	/* Event Functions */
@@ -337,6 +354,14 @@ public class GameSystemCtrl : MonoBehaviour {
 		return upgradeTechLeftSeconds;
 	}
 
+	public bool getWeatherRainState() {
+		return weatherRainState;
+	}
+
+	public bool getWeatherSnowState() {
+		return weatherSnowState;
+	}
+
 	public float getCurrentGold() {
 		return currentGold;
 	}
@@ -420,18 +445,21 @@ public class GameSystemCtrl : MonoBehaviour {
 	private void RunTime() {
 		if(!dayRun) return;
 
-		float prev_dayp = dayProgress;
+		float prevDayProgress = dayProgress;
+		DateTime prevDayDateTime = dayDateTime;
 
 		dayProgress += Time.deltaTime;
 		dayDateTime = dayDateTime.AddDays(Time.deltaTime/DaySeconds);
 
-		if(((int)prev_dayp) != ((int)dayProgress)) SecondUpdate();
+		if(((int)prevDayProgress) != ((int)dayProgress)) SecondUpdate();
+		if(prevDayDateTime.Day != dayDateTime.Day) DayUpdate();
+		if(prevDayDateTime.Month != dayDateTime.Month) MonthUpdate();
+		if(prevDayDateTime.Year != dayDateTime.Year) YearUpdate();
 
 		if(dayProgress >= DaySeconds){
 			dayProgress -= DaySeconds;
 			daySurvives++;
 		}
-
 		
 		if(currentPeopleLeftSeconds > 0)
 			currentPeopleLeftSeconds -= Time.deltaTime * speedPeopleSeconds;
