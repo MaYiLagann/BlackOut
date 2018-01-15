@@ -116,6 +116,10 @@ public class GameSystemCtrl : MonoBehaviour {
 
 	/* Get Functions */
 
+	public bool getDayRun() {
+		return dayRun;
+	}
+
 	public float getDayProgress() {
 		return dayProgress;
 	}
@@ -199,6 +203,10 @@ public class GameSystemCtrl : MonoBehaviour {
 	/* Get Functions */
 
 	/* Logic Functions */
+
+	public void GameEnd() {
+		Application.Quit();
+	}
 
 	public void setUpgradeBuildingLevel() {
 		if(upgradeBuildingState) return;
