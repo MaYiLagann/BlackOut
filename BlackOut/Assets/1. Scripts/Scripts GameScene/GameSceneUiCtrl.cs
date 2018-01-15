@@ -117,7 +117,7 @@ public class GameSceneUiCtrl : MonoBehaviour {
 
 	private void SetStaticUiValues() {
 		System.DateTime date = CurrentGameSystemCtrl.getDayDateTime();
-		StaticTimeText.text = date.Month + "월 " + date.Day + "일 " + date.Hour + "시 " + date.Minute + "분";
+		StaticTimeText.text = date.Month + "월 " + date.Day + "일 ";
 		StaticCurrentGoldText.text = CurrentGameSystemCtrl.getCurrentGold().ToString("F0");
 	}
 
