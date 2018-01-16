@@ -43,6 +43,11 @@ public class GameSceneUiCtrl : MonoBehaviour {
 	public Text DevCurrentPeopleSecondsText;
 	public Text DevCurrentRainStateText;
 	public Text DevCurrentSnowStateText;
+	public Text DevCurrentDisasterLevelText;
+	public Text DevCurrentDisasterDroughtSecondsText;
+	public Text DevCurrentDisasterFloodSecondsText;
+	public Text DevCurrentDisasterTyphoonSecondsText;
+	public Text DevCurrentDisasterHeavySnowSecondsText;
 
 	[Header("- Foreground Settings -")]
 	public GameObject WeatherRainEffect;
@@ -134,6 +139,11 @@ public class GameSceneUiCtrl : MonoBehaviour {
 		DevCurrentPeopleSecondsText.text = "인구 증가 시간: " + CurrentGameSystemCtrl.getCurrentPeopleSeconds().ToString("F0") + "s";
 		DevCurrentRainStateText.text = "비 상태: " + (CurrentGameSystemCtrl.getWeatherRainState()? "On" : "Off");
 		DevCurrentSnowStateText.text = "눈 상태: " + (CurrentGameSystemCtrl.getWeatherSnowState()? "On" : "Off");
+		DevCurrentDisasterLevelText.text = "재해 레벨: " + CurrentGameSystemCtrl.getCurrentDisasterLevel();
+		DevCurrentDisasterDroughtSecondsText.text = "가뭄 시간: " + CurrentGameSystemCtrl.getDisasterDroughtLeftSeconds().ToString("F0") + "s";
+		DevCurrentDisasterFloodSecondsText.text = "홍수 시간: " + CurrentGameSystemCtrl.getDisasterFloodLeftSeconds().ToString("F0") + "s";
+		DevCurrentDisasterTyphoonSecondsText.text = "태풍 시간: " + CurrentGameSystemCtrl.getDisasterTyphoonLeftSeconds().ToString("F0") + "s";
+		DevCurrentDisasterHeavySnowSecondsText.text = "폭설 시간: " + CurrentGameSystemCtrl.getDisasterHeavySnowLeftSeconds().ToString("F0") + "s";
 	}
 
 	private void SetUpgradeUiValues() {

@@ -156,10 +156,15 @@ public class GameSystemCtrl : MonoBehaviour {
 
 	[Header("- Disaster Settings -")]
 	public DisasterLevel[] DisasterLevelData;
+	private int currentDisasterLevel;
 	public DisasterDrought DisasterDroughtData;
+	private float disasterDroughtLeftSeconds;
 	public DisasterFlood DisasterFloodData;
+	private float disasterFloodLeftSeconds;
 	public DisasterTyphoon DisasterTyphoonData;
+	private float disasterTyphoonLeftSeconds;
 	public DisasterHeavySnow DisasterHeavySnowData;
+	private float disasterHeavySnowLeftSeconds;
 
 	[Header("- Gold Settings -")]
 	public float StartGold = 0;
@@ -189,6 +194,12 @@ public class GameSystemCtrl : MonoBehaviour {
 
 		weatherRainState = false;
 		weatherSnowState = false;
+
+		currentDisasterLevel = 1;
+		disasterDroughtLeftSeconds = 0f;
+		disasterFloodLeftSeconds = 0f;
+		disasterTyphoonLeftSeconds = 0f;
+		disasterHeavySnowLeftSeconds = 0f;
 
 		currentGold = StartGold;
 
@@ -235,7 +246,36 @@ public class GameSystemCtrl : MonoBehaviour {
 	}
 	
 	void MonthUpdate () {
-
+		bool newSeason;
+		string season = getSeason(dayDateTime.Month, out newSeason);
+		if(newSeason){
+			switch(season) {
+			case "spring":
+				disasterDroughtLeftSeconds = UnityEngine.Random.Range(0f, 1f) <= DisasterDroughtData.PercentageSpring? DisasterDroughtData.DamageLevel[currentDisasterLevel-1] : 0f;
+				disasterFloodLeftSeconds = UnityEngine.Random.Range(0f, 1f) <= DisasterFloodData.PercentageSpring? DisasterFloodData.DamageLevel[currentDisasterLevel-1] : 0f;
+				disasterTyphoonLeftSeconds = UnityEngine.Random.Range(0f, 1f) <= DisasterTyphoonData.PercentageSpring? DisasterTyphoonData.DamageLevel[currentDisasterLevel-1] : 0f;
+				disasterHeavySnowLeftSeconds = UnityEngine.Random.Range(0f, 1f) <= DisasterHeavySnowData.PercentageSpring? DisasterHeavySnowData.DamageLevel[currentDisasterLevel-1] : 0f;
+			break;
+			case "summer":
+				disasterDroughtLeftSeconds = UnityEngine.Random.Range(0f, 1f) <= DisasterDroughtData.PercentageSummer? DisasterDroughtData.DamageLevel[currentDisasterLevel-1] : 0f;
+				disasterFloodLeftSeconds = UnityEngine.Random.Range(0f, 1f) <= DisasterFloodData.PercentageSummer? DisasterFloodData.DamageLevel[currentDisasterLevel-1] : 0f;
+				disasterTyphoonLeftSeconds = UnityEngine.Random.Range(0f, 1f) <= DisasterTyphoonData.PercentageSummer? DisasterTyphoonData.DamageLevel[currentDisasterLevel-1] : 0f;
+				disasterHeavySnowLeftSeconds = UnityEngine.Random.Range(0f, 1f) <= DisasterHeavySnowData.PercentageSummer? DisasterHeavySnowData.DamageLevel[currentDisasterLevel-1] : 0f;
+			break;
+			case "fall":
+				disasterDroughtLeftSeconds = UnityEngine.Random.Range(0f, 1f) <= DisasterDroughtData.PercentageFall? DisasterDroughtData.DamageLevel[currentDisasterLevel-1] : 0f;
+				disasterFloodLeftSeconds = UnityEngine.Random.Range(0f, 1f) <= DisasterFloodData.PercentageFall? DisasterFloodData.DamageLevel[currentDisasterLevel-1] : 0f;
+				disasterTyphoonLeftSeconds = UnityEngine.Random.Range(0f, 1f) <= DisasterTyphoonData.PercentageFall? DisasterTyphoonData.DamageLevel[currentDisasterLevel-1] : 0f;
+				disasterHeavySnowLeftSeconds = UnityEngine.Random.Range(0f, 1f) <= DisasterHeavySnowData.PercentageFall? DisasterHeavySnowData.DamageLevel[currentDisasterLevel-1] : 0f;
+			break;
+			case "winter":
+				disasterDroughtLeftSeconds = UnityEngine.Random.Range(0f, 1f) <= DisasterDroughtData.PercentageWinter? DisasterDroughtData.DamageLevel[currentDisasterLevel-1] : 0f;
+				disasterFloodLeftSeconds = UnityEngine.Random.Range(0f, 1f) <= DisasterFloodData.PercentageWinter? DisasterFloodData.DamageLevel[currentDisasterLevel-1] : 0f;
+				disasterTyphoonLeftSeconds = UnityEngine.Random.Range(0f, 1f) <= DisasterTyphoonData.PercentageWinter? DisasterTyphoonData.DamageLevel[currentDisasterLevel-1] : 0f;
+				disasterHeavySnowLeftSeconds = UnityEngine.Random.Range(0f, 1f) <= DisasterHeavySnowData.PercentageWinter? DisasterHeavySnowData.DamageLevel[currentDisasterLevel-1] : 0f;
+			break;
+			}
+		}
 	}
 
 	void YearUpdate () {
@@ -326,6 +366,26 @@ public class GameSystemCtrl : MonoBehaviour {
 		return UpgradeLandData.Length < upgradeLandLevel? -1f : UpgradeLandData[upgradeLandLevel-1].SpawnPeopleSeconds * per;
 	}
 
+	public int getCurrentDisasterLevel() {
+		return currentDisasterLevel;
+	}
+
+	public float getDisasterDroughtLeftSeconds() {
+		return disasterDroughtLeftSeconds;
+	}
+	
+	public float getDisasterFloodLeftSeconds() {
+		return disasterFloodLeftSeconds;
+	}
+	
+	public float getDisasterTyphoonLeftSeconds() {
+		return disasterTyphoonLeftSeconds;
+	}
+	
+	public float getDisasterHeavySnowLeftSeconds() {
+		return disasterHeavySnowLeftSeconds;
+	}
+
 	/* Get Functions */
 
 	/* Logic Functions */
@@ -340,6 +400,7 @@ public class GameSystemCtrl : MonoBehaviour {
 		
 		currentGold -= UpgradeBuildingData[upgradeBuildingLevel].CostGold;
 		upgradeBuildingLevel++;
+		setDisasterLevel();
 	}
 	
 	public void setUpgradeLandLevel() {
@@ -348,6 +409,7 @@ public class GameSystemCtrl : MonoBehaviour {
 		
 		currentGold -= UpgradeLandData[upgradeLandLevel].CostGold;
 		upgradeLandLevel++;
+		setDisasterLevel();
 	}
 	
 	public void setUpgradeFishingLevel() {
@@ -356,6 +418,7 @@ public class GameSystemCtrl : MonoBehaviour {
 		
 		currentGold -= UpgradeFishingData[upgradeFishingLevel].CostGold;
 		upgradeFishingLevel++;
+		setDisasterLevel();
 	}
 	
 	public void setUpgradeTechLevel() {
@@ -364,6 +427,7 @@ public class GameSystemCtrl : MonoBehaviour {
 		
 		currentGold -= UpgradeTechData[upgradeTechLevel].CostGold;
 		upgradeTechLevel++;
+		setDisasterLevel();
 	}
 
 	public void toggleDayRun() {
@@ -395,6 +459,12 @@ public class GameSystemCtrl : MonoBehaviour {
 	}
 
 	private string getSeason(int month) {
+		bool temp;
+		return getSeason(month, out temp);
+	}
+
+	private string getSeason(int month, out bool newSeason) {
+		newSeason = month==3 || month==6 || month==9 || month==12;
 		if(month < 0 || month > 12){
 			Debug.LogError("Error: month is over 0, less 13");
 			return "error";
@@ -423,6 +493,13 @@ public class GameSystemCtrl : MonoBehaviour {
 		break;
 		}
 		return season;
+	}
+
+	private void setDisasterLevel() {
+		int level = upgradeBuildingLevel + upgradeLandLevel + upgradeFishingLevel + upgradeTechLevel;
+		int i = 0;
+		while(i<DisasterLevelData.Length && level > DisasterLevelData[i].BoundaryLevel) i++;
+		currentDisasterLevel = i + 1;
 	}
 
 	/* Logic Functions */
