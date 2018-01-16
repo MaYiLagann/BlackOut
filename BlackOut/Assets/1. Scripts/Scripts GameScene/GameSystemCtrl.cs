@@ -158,13 +158,13 @@ public class GameSystemCtrl : MonoBehaviour {
 	public DisasterLevel[] DisasterLevelData;
 	private int currentDisasterLevel;
 	public DisasterDrought DisasterDroughtData;
-	private float disasterDroughtLeftSeconds;
+	private float disasterDroughtLeftDays;
 	public DisasterFlood DisasterFloodData;
-	private float disasterFloodLeftSeconds;
+	private float disasterFloodLeftDays;
 	public DisasterTyphoon DisasterTyphoonData;
-	private float disasterTyphoonLeftSeconds;
+	private float disasterTyphoonLeftDays;
 	public DisasterHeavySnow DisasterHeavySnowData;
-	private float disasterHeavySnowLeftSeconds;
+	private float disasterHeavySnowLeftDays;
 
 	[Header("- Gold Settings -")]
 	public float StartGold = 0;
@@ -196,10 +196,10 @@ public class GameSystemCtrl : MonoBehaviour {
 		weatherSnowState = false;
 
 		currentDisasterLevel = 1;
-		disasterDroughtLeftSeconds = 0f;
-		disasterFloodLeftSeconds = 0f;
-		disasterTyphoonLeftSeconds = 0f;
-		disasterHeavySnowLeftSeconds = 0f;
+		disasterDroughtLeftDays = 0f;
+		disasterFloodLeftDays = 0f;
+		disasterTyphoonLeftDays = 0f;
+		disasterHeavySnowLeftDays = 0f;
 
 		currentGold = StartGold;
 
@@ -214,17 +214,21 @@ public class GameSystemCtrl : MonoBehaviour {
 	}
 
 	void SecondUpdate () {
+
 		currentGold += UpgradeBuildingData[upgradeBuildingLevel-1].ObtainGoldSeconds;
-		if(currentPeopleLeftSeconds > 0) {
-			currentPeopleLeftSeconds -= 1;
+
+		if(currentPeopleLeftSeconds > 0f) {
+			currentPeopleLeftSeconds -= 1f;
 		} else if(currentPeople+1 <= getCurrentMaxPeople()) {
 			currentPeople++;
 			if(currentPeople+1 <= getCurrentMaxPeople())
 				currentPeopleLeftSeconds = getSpawnPeopleSeconds();
 		}
+
 	}
 
 	void DayUpdate () {
+
 		switch(getSeason(dayDateTime.Month)){
 		case "spring":
 			weatherRainState = UnityEngine.Random.Range(0f, 1f) <= WeatherRainData.PercentageSpring;
@@ -243,6 +247,16 @@ public class GameSystemCtrl : MonoBehaviour {
 			weatherSnowState = UnityEngine.Random.Range(0f, 1f) <= WeatherSnowData.PercentageWinter;
 		break;
 		}
+
+		if(disasterDroughtLeftDays > 0)
+			disasterDroughtLeftDays -= 1f;
+		if(disasterFloodLeftDays > 0)
+			disasterFloodLeftDays -= 1f;
+		if(disasterTyphoonLeftDays > 0)
+			disasterTyphoonLeftDays -= 1f;
+		if(disasterHeavySnowLeftDays > 0)
+			disasterHeavySnowLeftDays -= 1f;
+
 	}
 	
 	void MonthUpdate () {
@@ -251,28 +265,28 @@ public class GameSystemCtrl : MonoBehaviour {
 		if(newSeason){
 			switch(season) {
 			case "spring":
-				disasterDroughtLeftSeconds = UnityEngine.Random.Range(0f, 1f) <= DisasterDroughtData.PercentageSpring? DisasterDroughtData.DamageLevel[currentDisasterLevel-1] : 0f;
-				disasterFloodLeftSeconds = UnityEngine.Random.Range(0f, 1f) <= DisasterFloodData.PercentageSpring? DisasterFloodData.DamageLevel[currentDisasterLevel-1] : 0f;
-				disasterTyphoonLeftSeconds = UnityEngine.Random.Range(0f, 1f) <= DisasterTyphoonData.PercentageSpring? DisasterTyphoonData.DamageLevel[currentDisasterLevel-1] : 0f;
-				disasterHeavySnowLeftSeconds = UnityEngine.Random.Range(0f, 1f) <= DisasterHeavySnowData.PercentageSpring? DisasterHeavySnowData.DamageLevel[currentDisasterLevel-1] : 0f;
+				disasterDroughtLeftDays = UnityEngine.Random.Range(0f, 1f) <= DisasterDroughtData.PercentageSpring? DisasterLevelData[currentDisasterLevel-1].DurationDays : 0f;
+				disasterFloodLeftDays = UnityEngine.Random.Range(0f, 1f) <= DisasterFloodData.PercentageSpring? DisasterLevelData[currentDisasterLevel-1].DurationDays : 0f;
+				disasterTyphoonLeftDays = UnityEngine.Random.Range(0f, 1f) <= DisasterTyphoonData.PercentageSpring? DisasterLevelData[currentDisasterLevel-1].DurationDays : 0f;
+				disasterHeavySnowLeftDays = UnityEngine.Random.Range(0f, 1f) <= DisasterHeavySnowData.PercentageSpring? DisasterLevelData[currentDisasterLevel-1].DurationDays : 0f;
 			break;
 			case "summer":
-				disasterDroughtLeftSeconds = UnityEngine.Random.Range(0f, 1f) <= DisasterDroughtData.PercentageSummer? DisasterDroughtData.DamageLevel[currentDisasterLevel-1] : 0f;
-				disasterFloodLeftSeconds = UnityEngine.Random.Range(0f, 1f) <= DisasterFloodData.PercentageSummer? DisasterFloodData.DamageLevel[currentDisasterLevel-1] : 0f;
-				disasterTyphoonLeftSeconds = UnityEngine.Random.Range(0f, 1f) <= DisasterTyphoonData.PercentageSummer? DisasterTyphoonData.DamageLevel[currentDisasterLevel-1] : 0f;
-				disasterHeavySnowLeftSeconds = UnityEngine.Random.Range(0f, 1f) <= DisasterHeavySnowData.PercentageSummer? DisasterHeavySnowData.DamageLevel[currentDisasterLevel-1] : 0f;
+				disasterDroughtLeftDays = UnityEngine.Random.Range(0f, 1f) <= DisasterDroughtData.PercentageSummer? DisasterLevelData[currentDisasterLevel-1].DurationDays : 0f;
+				disasterFloodLeftDays = UnityEngine.Random.Range(0f, 1f) <= DisasterFloodData.PercentageSummer? DisasterLevelData[currentDisasterLevel-1].DurationDays : 0f;
+				disasterTyphoonLeftDays = UnityEngine.Random.Range(0f, 1f) <= DisasterTyphoonData.PercentageSummer? DisasterLevelData[currentDisasterLevel-1].DurationDays : 0f;
+				disasterHeavySnowLeftDays = UnityEngine.Random.Range(0f, 1f) <= DisasterHeavySnowData.PercentageSummer? DisasterLevelData[currentDisasterLevel-1].DurationDays : 0f;
 			break;
 			case "fall":
-				disasterDroughtLeftSeconds = UnityEngine.Random.Range(0f, 1f) <= DisasterDroughtData.PercentageFall? DisasterDroughtData.DamageLevel[currentDisasterLevel-1] : 0f;
-				disasterFloodLeftSeconds = UnityEngine.Random.Range(0f, 1f) <= DisasterFloodData.PercentageFall? DisasterFloodData.DamageLevel[currentDisasterLevel-1] : 0f;
-				disasterTyphoonLeftSeconds = UnityEngine.Random.Range(0f, 1f) <= DisasterTyphoonData.PercentageFall? DisasterTyphoonData.DamageLevel[currentDisasterLevel-1] : 0f;
-				disasterHeavySnowLeftSeconds = UnityEngine.Random.Range(0f, 1f) <= DisasterHeavySnowData.PercentageFall? DisasterHeavySnowData.DamageLevel[currentDisasterLevel-1] : 0f;
+				disasterDroughtLeftDays = UnityEngine.Random.Range(0f, 1f) <= DisasterDroughtData.PercentageFall? DisasterLevelData[currentDisasterLevel-1].DurationDays : 0f;
+				disasterFloodLeftDays = UnityEngine.Random.Range(0f, 1f) <= DisasterFloodData.PercentageFall? DisasterLevelData[currentDisasterLevel-1].DurationDays : 0f;
+				disasterTyphoonLeftDays = UnityEngine.Random.Range(0f, 1f) <= DisasterTyphoonData.PercentageFall? DisasterLevelData[currentDisasterLevel-1].DurationDays : 0f;
+				disasterHeavySnowLeftDays = UnityEngine.Random.Range(0f, 1f) <= DisasterHeavySnowData.PercentageFall? DisasterLevelData[currentDisasterLevel-1].DurationDays : 0f;
 			break;
 			case "winter":
-				disasterDroughtLeftSeconds = UnityEngine.Random.Range(0f, 1f) <= DisasterDroughtData.PercentageWinter? DisasterDroughtData.DamageLevel[currentDisasterLevel-1] : 0f;
-				disasterFloodLeftSeconds = UnityEngine.Random.Range(0f, 1f) <= DisasterFloodData.PercentageWinter? DisasterFloodData.DamageLevel[currentDisasterLevel-1] : 0f;
-				disasterTyphoonLeftSeconds = UnityEngine.Random.Range(0f, 1f) <= DisasterTyphoonData.PercentageWinter? DisasterTyphoonData.DamageLevel[currentDisasterLevel-1] : 0f;
-				disasterHeavySnowLeftSeconds = UnityEngine.Random.Range(0f, 1f) <= DisasterHeavySnowData.PercentageWinter? DisasterHeavySnowData.DamageLevel[currentDisasterLevel-1] : 0f;
+				disasterDroughtLeftDays = UnityEngine.Random.Range(0f, 1f) <= DisasterDroughtData.PercentageWinter? DisasterLevelData[currentDisasterLevel-1].DurationDays : 0f;
+				disasterFloodLeftDays = UnityEngine.Random.Range(0f, 1f) <= DisasterFloodData.PercentageWinter? DisasterLevelData[currentDisasterLevel-1].DurationDays : 0f;
+				disasterTyphoonLeftDays = UnityEngine.Random.Range(0f, 1f) <= DisasterTyphoonData.PercentageWinter? DisasterLevelData[currentDisasterLevel-1].DurationDays : 0f;
+				disasterHeavySnowLeftDays = UnityEngine.Random.Range(0f, 1f) <= DisasterHeavySnowData.PercentageWinter? DisasterLevelData[currentDisasterLevel-1].DurationDays : 0f;
 			break;
 			}
 		}
@@ -370,20 +384,20 @@ public class GameSystemCtrl : MonoBehaviour {
 		return currentDisasterLevel;
 	}
 
-	public float getDisasterDroughtLeftSeconds() {
-		return disasterDroughtLeftSeconds;
+	public float getDisasterDroughtLeftDays() {
+		return disasterDroughtLeftDays;
 	}
 	
-	public float getDisasterFloodLeftSeconds() {
-		return disasterFloodLeftSeconds;
+	public float getDisasterFloodLeftDays() {
+		return disasterFloodLeftDays;
 	}
 	
-	public float getDisasterTyphoonLeftSeconds() {
-		return disasterTyphoonLeftSeconds;
+	public float getDisasterTyphoonLeftDays() {
+		return disasterTyphoonLeftDays;
 	}
 	
-	public float getDisasterHeavySnowLeftSeconds() {
-		return disasterHeavySnowLeftSeconds;
+	public float getDisasterHeavySnowLeftDays() {
+		return disasterHeavySnowLeftDays;
 	}
 
 	/* Get Functions */

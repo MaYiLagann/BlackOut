@@ -44,14 +44,18 @@ public class GameSceneUiCtrl : MonoBehaviour {
 	public Text DevCurrentRainStateText;
 	public Text DevCurrentSnowStateText;
 	public Text DevCurrentDisasterLevelText;
-	public Text DevCurrentDisasterDroughtSecondsText;
-	public Text DevCurrentDisasterFloodSecondsText;
-	public Text DevCurrentDisasterTyphoonSecondsText;
-	public Text DevCurrentDisasterHeavySnowSecondsText;
+	public Text DevCurrentDisasterDroughtDaysText;
+	public Text DevCurrentDisasterFloodDaysText;
+	public Text DevCurrentDisasterTyphoonDaysText;
+	public Text DevCurrentDisasterHeavySnowDaysText;
 
 	[Header("- Foreground Settings -")]
 	public GameObject WeatherRainEffect;
 	public GameObject WeatherSnowEffect;
+	public GameObject DisasterDroughtEffect;
+	public GameObject DisasterFloodEffect;
+	public GameObject DisasterTyphoonEffect;
+	public GameObject DisasterHeavySnowEffect;
 	public Animator DayNightCycleAnimator;
 
 	[Header("- Require Components -")]
@@ -66,7 +70,6 @@ public class GameSceneUiCtrl : MonoBehaviour {
 	void FixedUpdate() {
 
 		SetStaticUiValues();
-		SetForegroundUiValues();
 		switch(gameObject.GetComponent<Animator>().GetInteger("State")){
 			case -1:
 				if(Input.GetKeyDown(KeyCode.Escape)) {
@@ -109,15 +112,17 @@ public class GameSceneUiCtrl : MonoBehaviour {
 		anim.SetTrigger("Move");
 	}
 
-	private void SetForegroundUiValues() {
-		WeatherRainEffect.SetActive(CurrentGameSystemCtrl.getWeatherRainState());
-		WeatherSnowEffect.SetActive(CurrentGameSystemCtrl.getWeatherSnowState());
-	}
-
 	private void SetStaticUiValues() {
 		System.DateTime date = CurrentGameSystemCtrl.getDayDateTime();
 		StaticTimeText.text = date.Month + "월 " + date.Day + "일 ";
 		StaticCurrentGoldText.text = CurrentGameSystemCtrl.getCurrentGold().ToString("F0");
+
+		WeatherRainEffect.SetActive(CurrentGameSystemCtrl.getWeatherRainState());
+		WeatherSnowEffect.SetActive(CurrentGameSystemCtrl.getWeatherSnowState());
+		DisasterDroughtEffect.SetActive(CurrentGameSystemCtrl.getDisasterDroughtLeftDays() > 0);
+		DisasterFloodEffect.SetActive(CurrentGameSystemCtrl.getDisasterFloodLeftDays() > 0);
+		DisasterTyphoonEffect.SetActive(CurrentGameSystemCtrl.getDisasterTyphoonLeftDays() > 0);
+		DisasterHeavySnowEffect.SetActive(CurrentGameSystemCtrl.getDisasterHeavySnowLeftDays() > 0);
 	}
 
 	private void SetMainUiValues() {
@@ -140,10 +145,10 @@ public class GameSceneUiCtrl : MonoBehaviour {
 		DevCurrentRainStateText.text = "비 상태: " + (CurrentGameSystemCtrl.getWeatherRainState()? "On" : "Off");
 		DevCurrentSnowStateText.text = "눈 상태: " + (CurrentGameSystemCtrl.getWeatherSnowState()? "On" : "Off");
 		DevCurrentDisasterLevelText.text = "재해 레벨: " + CurrentGameSystemCtrl.getCurrentDisasterLevel();
-		DevCurrentDisasterDroughtSecondsText.text = "가뭄 시간: " + CurrentGameSystemCtrl.getDisasterDroughtLeftSeconds().ToString("F0") + "s";
-		DevCurrentDisasterFloodSecondsText.text = "홍수 시간: " + CurrentGameSystemCtrl.getDisasterFloodLeftSeconds().ToString("F0") + "s";
-		DevCurrentDisasterTyphoonSecondsText.text = "태풍 시간: " + CurrentGameSystemCtrl.getDisasterTyphoonLeftSeconds().ToString("F0") + "s";
-		DevCurrentDisasterHeavySnowSecondsText.text = "폭설 시간: " + CurrentGameSystemCtrl.getDisasterHeavySnowLeftSeconds().ToString("F0") + "s";
+		DevCurrentDisasterDroughtDaysText.text = "가뭄 시간: " + CurrentGameSystemCtrl.getDisasterDroughtLeftDays().ToString("F0") + "일";
+		DevCurrentDisasterFloodDaysText.text = "홍수 시간: " + CurrentGameSystemCtrl.getDisasterFloodLeftDays().ToString("F0") + "일";
+		DevCurrentDisasterTyphoonDaysText.text = "태풍 시간: " + CurrentGameSystemCtrl.getDisasterTyphoonLeftDays().ToString("F0") + "일";
+		DevCurrentDisasterHeavySnowDaysText.text = "폭설 시간: " + CurrentGameSystemCtrl.getDisasterHeavySnowLeftDays().ToString("F0") + "일";
 	}
 
 	private void SetUpgradeUiValues() {
