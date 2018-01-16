@@ -11,7 +11,6 @@ public class GameSceneUiCtrl : MonoBehaviour {
 	public Text StaticTimeText;
 	public Text StaticCurrentGoldText;
 
-
 	[Header("- Main Settings -")]
 	public Text MainCurrentPeopleText;
 	public Text MainCurrentPeopleSpawnSecondsText;
@@ -42,8 +41,12 @@ public class GameSceneUiCtrl : MonoBehaviour {
 	public Text DevCurrentGoldText;
 	public Text DevCurrentPeopleText;
 	public Text DevCurrentPeopleSecondsText;
+	public Text DevCurrentRainStateText;
+	public Text DevCurrentSnowStateText;
 
-	[Header("- Day Night Cycle Settings -")]
+	[Header("- Foreground Settings -")]
+	public GameObject WeatherRainEffect;
+	public GameObject WeatherSnowEffect;
 	public Animator DayNightCycleAnimator;
 
 	[Header("- Require Components -")]
@@ -58,6 +61,7 @@ public class GameSceneUiCtrl : MonoBehaviour {
 	void FixedUpdate() {
 
 		SetStaticUiValues();
+		SetForegroundUiValues();
 		switch(gameObject.GetComponent<Animator>().GetInteger("State")){
 			case -1:
 				if(Input.GetKeyDown(KeyCode.Escape)) {
@@ -87,12 +91,7 @@ public class GameSceneUiCtrl : MonoBehaviour {
 			break;
 		}
 
-		if(CurrentGameSystemCtrl.getDayRun()) {
-			DayNightCycleAnimator.speed = 1/CurrentGameSystemCtrl.DaySeconds;
-		} else {
-			DayNightCycleAnimator.speed = 0;
-		}
-
+		DayNightCycleAnimator.speed = CurrentGameSystemCtrl.getDayRun()? 1/CurrentGameSystemCtrl.DaySeconds*CurrentGameSystemCtrl.DaySpeed : 0;
 	}
 	
 	/* Event Functions */
@@ -103,6 +102,11 @@ public class GameSceneUiCtrl : MonoBehaviour {
 		Animator anim = gameObject.GetComponent<Animator>();
 		anim.SetInteger("State", state);
 		anim.SetTrigger("Move");
+	}
+
+	private void SetForegroundUiValues() {
+		WeatherRainEffect.SetActive(CurrentGameSystemCtrl.getWeatherRainState());
+		WeatherSnowEffect.SetActive(CurrentGameSystemCtrl.getWeatherSnowState());
 	}
 
 	private void SetStaticUiValues() {
@@ -128,6 +132,8 @@ public class GameSceneUiCtrl : MonoBehaviour {
 		DevCurrentGoldText.text = "현재 돈: " + CurrentGameSystemCtrl.getCurrentGold() + "G";
 		DevCurrentPeopleText.text = "현재 인구: " + CurrentGameSystemCtrl.getCurrentPeople() + "/" + CurrentGameSystemCtrl.getCurrentMaxPeople() + " 명";
 		DevCurrentPeopleSecondsText.text = "인구 증가 시간: " + CurrentGameSystemCtrl.getCurrentPeopleSeconds().ToString("F0") + "s";
+		DevCurrentRainStateText.text = "비 상태: " + (CurrentGameSystemCtrl.getWeatherRainState()? "On" : "Off");
+		DevCurrentSnowStateText.text = "눈 상태: " + (CurrentGameSystemCtrl.getWeatherSnowState()? "On" : "Off");
 	}
 
 	private void SetUpgradeUiValues() {
@@ -146,7 +152,6 @@ public class GameSceneUiCtrl : MonoBehaviour {
 	}
 
 	private void InitDayNightCycle() {
-		DayNightCycleAnimator.speed = 1/CurrentGameSystemCtrl.DaySeconds;
 		float pr = CurrentGameSystemCtrl.getDayProgress()/CurrentGameSystemCtrl.DaySeconds;
 		if(pr>1)
 			pr-=Mathf.Floor(pr);

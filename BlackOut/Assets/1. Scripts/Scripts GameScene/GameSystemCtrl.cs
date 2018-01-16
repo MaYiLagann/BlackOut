@@ -169,7 +169,6 @@ public class GameSystemCtrl : MonoBehaviour {
 	public int StartPeople = 0;
 	private int currentPeople;
 	private float currentPeopleLeftSeconds;
-	private float speedPeopleSeconds;
 
 	[Header("- Require Components -")]
 	public BuildingScaler CurrentBuildingScaler;
@@ -195,7 +194,6 @@ public class GameSystemCtrl : MonoBehaviour {
 
 		currentPeople = StartPeople;
 		currentPeopleLeftSeconds = 0f;
-		speedPeopleSeconds = 1f;
 
 		CurrentBuildingScaler.SetScale(upgradeBuildingLevel);
 	}
@@ -206,10 +204,34 @@ public class GameSystemCtrl : MonoBehaviour {
 
 	void SecondUpdate () {
 		currentGold += UpgradeBuildingData[upgradeBuildingLevel-1].ObtainGoldSeconds;
+		if(currentPeopleLeftSeconds > 0) {
+			currentPeopleLeftSeconds -= 1;
+		} else if(currentPeople+1 <= getCurrentMaxPeople()) {
+			currentPeople++;
+			if(currentPeople+1 <= getCurrentMaxPeople())
+				currentPeopleLeftSeconds = getSpawnPeopleSeconds();
+		}
 	}
 
 	void DayUpdate () {
-		
+		switch(getSeason(dayDateTime.Month)){
+		case "spring":
+			weatherRainState = UnityEngine.Random.Range(0f, 1f) <= WeatherRainData.PercentageSpring;
+			weatherSnowState = UnityEngine.Random.Range(0f, 1f) <= WeatherSnowData.PercentageSpring;
+		break;
+		case "summer":
+			weatherRainState = UnityEngine.Random.Range(0f, 1f) <= WeatherRainData.PercentageSummer;
+			weatherSnowState = UnityEngine.Random.Range(0f, 1f) <= WeatherSnowData.PercentageSummer;
+		break;
+		case "fall":
+			weatherRainState = UnityEngine.Random.Range(0f, 1f) <= WeatherRainData.PercentageFall;
+			weatherSnowState = UnityEngine.Random.Range(0f, 1f) <= WeatherSnowData.PercentageFall;
+		break;
+		case "winter":
+			weatherRainState = UnityEngine.Random.Range(0f, 1f) <= WeatherRainData.PercentageWinter;
+			weatherSnowState = UnityEngine.Random.Range(0f, 1f) <= WeatherSnowData.PercentageWinter;
+		break;
+		}
 	}
 	
 	void MonthUpdate () {
@@ -297,7 +319,11 @@ public class GameSystemCtrl : MonoBehaviour {
 	}
 
 	public float getSpawnPeopleSeconds() {
-		return UpgradeLandData.Length < upgradeLandLevel? -1f : UpgradeLandData[upgradeLandLevel-1].SpawnPeopleSeconds;
+		float per = 1f;
+		if(weatherRainState) per += WeatherRainData.IncreasePeoplePercent;
+		if(weatherSnowState) per += WeatherSnowData.IncreasePeoplePercent;
+		
+		return UpgradeLandData.Length < upgradeLandLevel? -1f : UpgradeLandData[upgradeLandLevel-1].SpawnPeopleSeconds * per;
 	}
 
 	/* Get Functions */
@@ -351,13 +377,11 @@ public class GameSystemCtrl : MonoBehaviour {
 	private void RunTime() {
 		if(!dayRun) return;
 
-		float deltaTime = Time.deltaTime * DaySpeed;
-
 		float prevDayProgress = dayProgress;
 		DateTime prevDayDateTime = dayDateTime;
 
-		dayProgress += deltaTime;
-		dayDateTime = dayDateTime.AddDays(deltaTime/DaySeconds);
+		dayProgress += Time.deltaTime * DaySpeed;
+		dayDateTime = dayDateTime.AddDays(Time.deltaTime*DaySpeed/DaySeconds);
 
 		if(((int)prevDayProgress) != ((int)dayProgress)) SecondUpdate();
 		if(prevDayDateTime.Day != dayDateTime.Day) DayUpdate();
@@ -368,14 +392,37 @@ public class GameSystemCtrl : MonoBehaviour {
 			dayProgress -= DaySeconds;
 			daySurvives++;
 		}
-		
-		if(currentPeopleLeftSeconds > 0)
-			currentPeopleLeftSeconds -= deltaTime * speedPeopleSeconds;
-		else if(currentPeople+1 <= getCurrentMaxPeople()) {
-			currentPeople++;
-			if(currentPeople+1 <= getCurrentMaxPeople())
-				currentPeopleLeftSeconds = getSpawnPeopleSeconds();
+	}
+
+	private string getSeason(int month) {
+		if(month < 0 || month > 12){
+			Debug.LogError("Error: month is over 0, less 13");
+			return "error";
 		}
+		string season = "spring";
+		switch(month){
+		case 3:
+		case 4:
+		case 5:
+			season = "spring";
+		break;
+		case 6:
+		case 7:
+		case 8:
+			season = "summer";
+		break;
+		case 9:
+		case 10:
+		case 11:
+			season = "fall";
+		break;
+		case 12:
+		case 1:
+		case 2:
+			season = "winter";
+		break;
+		}
+		return season;
 	}
 
 	/* Logic Functions */
