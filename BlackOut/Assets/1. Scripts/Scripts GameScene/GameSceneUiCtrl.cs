@@ -119,15 +119,15 @@ public class GameSceneUiCtrl : MonoBehaviour {
 
 		WeatherRainEffect.SetActive(CurrentGameSystemCtrl.getWeatherRainState());
 		WeatherSnowEffect.SetActive(CurrentGameSystemCtrl.getWeatherSnowState());
-		DisasterDroughtEffect.SetActive(CurrentGameSystemCtrl.getDisasterDroughtLeftDays() > 0);
-		DisasterFloodEffect.SetActive(CurrentGameSystemCtrl.getDisasterFloodLeftDays() > 0);
-		DisasterTyphoonEffect.SetActive(CurrentGameSystemCtrl.getDisasterTyphoonLeftDays() > 0);
-		DisasterHeavySnowEffect.SetActive(CurrentGameSystemCtrl.getDisasterHeavySnowLeftDays() > 0);
+		DisasterDroughtEffect.SetActive(CurrentGameSystemCtrl.DisasterDroughtData.getLeftDays() > 0);
+		DisasterFloodEffect.SetActive(CurrentGameSystemCtrl.DisasterFloodData.getLeftDays() > 0);
+		DisasterTyphoonEffect.SetActive(CurrentGameSystemCtrl.DisasterTyphoonData.getLeftDays() > 0);
+		DisasterHeavySnowEffect.SetActive(CurrentGameSystemCtrl.DisasterHeavySnowData.getLeftDays() > 0);
 	}
 
 	private void SetMainUiValues() {
 		MainCurrentPeopleText.text = CurrentGameSystemCtrl.getCurrentPeople() + "/" + CurrentGameSystemCtrl.getCurrentMaxPeople() + " 명";
-		MainCurrentPeopleSpawnSecondsPanel.SetActive(CurrentGameSystemCtrl.getCurrentPeopleSeconds()>0);
+		MainCurrentPeopleSpawnSecondsPanel.SetActive(CurrentGameSystemCtrl.getCurrentPeopleSeconds() > 0f && CurrentGameSystemCtrl.getCurrentPeople() < CurrentGameSystemCtrl.getCurrentMaxPeople());
 		MainCurrentPeopleSpawnSecondsText.text = CurrentGameSystemCtrl.getCurrentPeopleSeconds().ToString("F0") + "s";
 	}
 
@@ -145,10 +145,10 @@ public class GameSceneUiCtrl : MonoBehaviour {
 		DevCurrentRainStateText.text = "비 상태: " + (CurrentGameSystemCtrl.getWeatherRainState()? "On" : "Off");
 		DevCurrentSnowStateText.text = "눈 상태: " + (CurrentGameSystemCtrl.getWeatherSnowState()? "On" : "Off");
 		DevCurrentDisasterLevelText.text = "재해 레벨: " + CurrentGameSystemCtrl.getCurrentDisasterLevel();
-		DevCurrentDisasterDroughtDaysText.text = "가뭄 시간: " + CurrentGameSystemCtrl.getDisasterDroughtLeftDays().ToString("F0") + "일";
-		DevCurrentDisasterFloodDaysText.text = "홍수 시간: " + CurrentGameSystemCtrl.getDisasterFloodLeftDays().ToString("F0") + "일";
-		DevCurrentDisasterTyphoonDaysText.text = "태풍 시간: " + CurrentGameSystemCtrl.getDisasterTyphoonLeftDays().ToString("F0") + "일";
-		DevCurrentDisasterHeavySnowDaysText.text = "폭설 시간: " + CurrentGameSystemCtrl.getDisasterHeavySnowLeftDays().ToString("F0") + "일";
+		DevCurrentDisasterDroughtDaysText.text = "가뭄 시간: " + CurrentGameSystemCtrl.DisasterDroughtData.getLeftDays().ToString("F0") + "일";
+		DevCurrentDisasterFloodDaysText.text = "홍수 시간: " + CurrentGameSystemCtrl.DisasterFloodData.getLeftDays().ToString("F0") + "일";
+		DevCurrentDisasterTyphoonDaysText.text = "태풍 시간: " + CurrentGameSystemCtrl.DisasterTyphoonData.getLeftDays().ToString("F0") + "일";
+		DevCurrentDisasterHeavySnowDaysText.text = "폭설 시간: " + CurrentGameSystemCtrl.DisasterHeavySnowData.getLeftDays().ToString("F0") + "일";
 	}
 
 	private void SetUpgradeUiValues() {
