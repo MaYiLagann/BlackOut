@@ -45,6 +45,45 @@ public class WeatherData {
 	[Range(0, 1)]
 	public float PercentageWinter;
 	public float IncreasePeoplePercent;
+
+	[HideInInspector]
+	public bool State;
+
+	public WeatherData() {
+		State = false;
+	}
+
+	/* Logic Function */
+
+	public bool setActive(string season) {
+		return setActive(season, () => {});
+	}
+
+	public bool setActive(string season, Action function) {
+		bool result = false;
+
+		switch(season) {
+		case "spring":
+			result = PercentageSpring != 0f && UnityEngine.Random.Range(0f, 1f) <= PercentageSpring;
+		break;
+		case "summer":
+			result = PercentageSummer != 0f && UnityEngine.Random.Range(0f, 1f) <= PercentageSummer;
+		break;
+		case "fall":
+			result = PercentageFall != 0f && UnityEngine.Random.Range(0f, 1f) <= PercentageFall;
+		break;
+		case "winter":
+			result = PercentageWinter != 0f && UnityEngine.Random.Range(0f, 1f) <= PercentageWinter;
+		break;
+		}
+
+		if(result)
+			function();
+
+		return result;
+	}
+
+	/* Logic Function */
 }
 
 /* Weather Class */
@@ -88,6 +127,10 @@ public class DisasterData {
 	/* Get Functions */
 
 	/* Logic Functions */
+
+	public bool setActive(string season) {
+		return setActive(season, () => {});
+	}
 
 	public bool setActive(string season, Action function) {
 
@@ -168,9 +211,7 @@ public class GameSystemCtrl : MonoBehaviour {
 
 	[Header("- Weather Settings -")]
 	public WeatherData WeatherRainData;
-	private bool weatherRainState;
 	public WeatherData WeatherSnowData;
-	private bool weatherSnowState;
 
 	[Header("- Disaster Settings -")]
 	public DisasterLevelData[] DisasterLevelData;
@@ -206,8 +247,8 @@ public class GameSystemCtrl : MonoBehaviour {
 		upgradeFishingLevel = 1;
 		upgradeTechLevel = 1;
 
-		weatherRainState = false;
-		weatherSnowState = false;
+		WeatherRainData.State = false;
+		WeatherSnowData.State = false;
 
 		currentDisasterLevel = 1;
 		DisasterDroughtData.DayUpdate = () => { DisasterDroughtData.setDamage(ref currentPeople, currentDisasterLevel, DisasterLevelData[currentDisasterLevel-1].DurationDays); };
@@ -242,40 +283,30 @@ public class GameSystemCtrl : MonoBehaviour {
 
 	void DayUpdate () {
 
-		switch(getSeason(dayDateTime.Month)){
-		case "spring":
-			weatherRainState = UnityEngine.Random.Range(0f, 1f) <= WeatherRainData.PercentageSpring;
-			weatherSnowState = UnityEngine.Random.Range(0f, 1f) <= WeatherSnowData.PercentageSpring;
-		break;
-		case "summer":
-			weatherRainState = UnityEngine.Random.Range(0f, 1f) <= WeatherRainData.PercentageSummer;
-			weatherSnowState = UnityEngine.Random.Range(0f, 1f) <= WeatherSnowData.PercentageSummer;
-		break;
-		case "fall":
-			weatherRainState = UnityEngine.Random.Range(0f, 1f) <= WeatherRainData.PercentageFall;
-			weatherSnowState = UnityEngine.Random.Range(0f, 1f) <= WeatherSnowData.PercentageFall;
-		break;
-		case "winter":
-			weatherRainState = UnityEngine.Random.Range(0f, 1f) <= WeatherRainData.PercentageWinter;
-			weatherSnowState = UnityEngine.Random.Range(0f, 1f) <= WeatherSnowData.PercentageWinter;
-		break;
-		}
-		
+		string season = getSeason(dayDateTime.Month);
+
+		WeatherRainData.State = WeatherRainData.setActive(season);
+		WeatherSnowData.State = WeatherSnowData.setActive(season);
+
 		DisasterDroughtData.subLeftDays(1f);
 		DisasterFloodData.subLeftDays(1f);
 		DisasterTyphoonData.subLeftDays(1f);
 		DisasterHeavySnowData.subLeftDays(1f);
+
 	}
 	
 	void MonthUpdate () {
+
 		bool newSeason;
 		string season = getSeason(dayDateTime.Month, out newSeason);
+
 		if(newSeason){
 			DisasterDroughtData.setActive(season, () => { DisasterDroughtData.setLeftDays(DisasterLevelData[currentDisasterLevel-1].DurationDays); });
 			DisasterFloodData.setActive(season, () => { DisasterFloodData.setLeftDays(DisasterLevelData[currentDisasterLevel-1].DurationDays); });
 			DisasterTyphoonData.setActive(season, () => { DisasterTyphoonData.setLeftDays(DisasterLevelData[currentDisasterLevel-1].DurationDays); });
 			DisasterHeavySnowData.setActive(season, () => { DisasterHeavySnowData.setLeftDays(DisasterLevelData[currentDisasterLevel-1].DurationDays); });
 		}
+
 	}
 
 	void YearUpdate () {
@@ -340,18 +371,6 @@ public class GameSystemCtrl : MonoBehaviour {
 	
 	/* Get Functions: Upgrade */
 	
-	/* Get Functions: Weather */
-
-	public bool getWeatherRainState() {
-		return weatherRainState;
-	}
-
-	public bool getWeatherSnowState() {
-		return weatherSnowState;
-	}
-	
-	/* Get Functions: Weather */
-	
 	/* Get Functions: Gold */
 
 	public float getCurrentGold() {
@@ -376,8 +395,8 @@ public class GameSystemCtrl : MonoBehaviour {
 
 	public float getSpawnPeopleSeconds() {
 		float per = 1f;
-		if(weatherRainState) per += WeatherRainData.IncreasePeoplePercent;
-		if(weatherSnowState) per += WeatherSnowData.IncreasePeoplePercent;
+		if(WeatherRainData.State) per += WeatherRainData.IncreasePeoplePercent;
+		if(WeatherSnowData.State) per += WeatherSnowData.IncreasePeoplePercent;
 		
 		return UpgradeLandData.Length < upgradeLandLevel? -1f : UpgradeLandData[upgradeLandLevel-1].SpawnPeopleSeconds * per;
 	}

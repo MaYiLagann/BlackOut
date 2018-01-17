@@ -117,8 +117,8 @@ public class GameSceneUiCtrl : MonoBehaviour {
 		StaticTimeText.text = date.Month + "월 " + date.Day + "일 ";
 		StaticCurrentGoldText.text = CurrentGameSystemCtrl.getCurrentGold().ToString("F0");
 
-		WeatherRainEffect.SetActive(CurrentGameSystemCtrl.getWeatherRainState());
-		WeatherSnowEffect.SetActive(CurrentGameSystemCtrl.getWeatherSnowState());
+		WeatherRainEffect.SetActive(CurrentGameSystemCtrl.WeatherRainData.State);
+		WeatherSnowEffect.SetActive(CurrentGameSystemCtrl.WeatherSnowData.State);
 		DisasterDroughtEffect.SetActive(CurrentGameSystemCtrl.DisasterDroughtData.getLeftDays() > 0);
 		DisasterFloodEffect.SetActive(CurrentGameSystemCtrl.DisasterFloodData.getLeftDays() > 0);
 		DisasterTyphoonEffect.SetActive(CurrentGameSystemCtrl.DisasterTyphoonData.getLeftDays() > 0);
@@ -142,8 +142,8 @@ public class GameSceneUiCtrl : MonoBehaviour {
 		DevCurrentGoldText.text = "현재 돈: " + CurrentGameSystemCtrl.getCurrentGold() + "G";
 		DevCurrentPeopleText.text = "현재 인구: " + CurrentGameSystemCtrl.getCurrentPeople() + "/" + CurrentGameSystemCtrl.getCurrentMaxPeople() + " 명";
 		DevCurrentPeopleSecondsText.text = "인구 증가 시간: " + CurrentGameSystemCtrl.getCurrentPeopleSeconds().ToString("F0") + "s";
-		DevCurrentRainStateText.text = "비 상태: " + (CurrentGameSystemCtrl.getWeatherRainState()? "On" : "Off");
-		DevCurrentSnowStateText.text = "눈 상태: " + (CurrentGameSystemCtrl.getWeatherSnowState()? "On" : "Off");
+		DevCurrentRainStateText.text = "비 상태: " + (CurrentGameSystemCtrl.WeatherRainData.State? "On" : "Off");
+		DevCurrentSnowStateText.text = "눈 상태: " + (CurrentGameSystemCtrl.WeatherSnowData.State? "On" : "Off");
 		DevCurrentDisasterLevelText.text = "재해 레벨: " + CurrentGameSystemCtrl.getCurrentDisasterLevel();
 		DevCurrentDisasterDroughtDaysText.text = "가뭄 시간: " + CurrentGameSystemCtrl.DisasterDroughtData.getLeftDays().ToString("F0") + "일";
 		DevCurrentDisasterFloodDaysText.text = "홍수 시간: " + CurrentGameSystemCtrl.DisasterFloodData.getLeftDays().ToString("F0") + "일";
