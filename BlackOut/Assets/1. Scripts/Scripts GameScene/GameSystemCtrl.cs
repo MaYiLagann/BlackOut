@@ -300,11 +300,31 @@ public class GameSystemCtrl : MonoBehaviour {
 		bool newSeason;
 		string season = getSeason(dayDateTime.Month, out newSeason);
 
-		if(newSeason){
-			DisasterDroughtData.setActive(season, () => { DisasterDroughtData.setLeftDays(DisasterLevelData[currentDisasterLevel-1].DurationDays); });
-			DisasterFloodData.setActive(season, () => { DisasterFloodData.setLeftDays(DisasterLevelData[currentDisasterLevel-1].DurationDays); });
-			DisasterTyphoonData.setActive(season, () => { DisasterTyphoonData.setLeftDays(DisasterLevelData[currentDisasterLevel-1].DurationDays); });
-			DisasterHeavySnowData.setActive(season, () => { DisasterHeavySnowData.setLeftDays(DisasterLevelData[currentDisasterLevel-1].DurationDays); });
+		if(newSeason) {
+			DisasterDroughtData.setActive(season, () => {
+				DisasterData data = DisasterDroughtData;
+				if(data.DamageLevel[currentDisasterLevel-1] == 0)
+					return;
+				data.setLeftDays(DisasterLevelData[currentDisasterLevel-1].DurationDays);
+			});
+			DisasterFloodData.setActive(season, () => {
+				DisasterData data = DisasterFloodData;
+				if(data.DamageLevel[currentDisasterLevel-1] == 0)
+					return;
+				data.setLeftDays(DisasterLevelData[currentDisasterLevel-1].DurationDays);
+			});
+			DisasterTyphoonData.setActive(season, () => {
+				DisasterData data = DisasterTyphoonData;
+				if(data.DamageLevel[currentDisasterLevel-1] == 0)
+					return;
+				data.setLeftDays(DisasterLevelData[currentDisasterLevel-1].DurationDays);
+			});
+			DisasterHeavySnowData.setActive(season, () => {
+				DisasterData data = DisasterHeavySnowData;
+				if(data.DamageLevel[currentDisasterLevel-1] == 0)
+					return;
+				data.setLeftDays(DisasterLevelData[currentDisasterLevel-1].DurationDays);
+			});
 		}
 
 	}
