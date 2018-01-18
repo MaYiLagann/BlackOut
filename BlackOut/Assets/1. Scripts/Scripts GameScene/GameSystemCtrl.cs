@@ -27,6 +27,8 @@ public class UpgradeFishing {
 [Serializable]
 public class UpgradeTech {
 	public int ActiveState;
+	[Range(0f, 1f)]
+	public float DecreaseDamage;
 	public float CostGold;
 }
 
@@ -171,8 +173,8 @@ public class DisasterData {
 		if((int)prev != (int)LeftDays) DayUpdate();
 	}
 
-	public void setDamage(ref int people, int level, float day) {
-		DamageCount +=  DamageLevel[level-1] / day;
+	public void setDamage(ref int people, int level, float day, float percent = 1f) {
+		DamageCount +=  DamageLevel[level-1] / day * percent;
 		if(DamageCount >= 1f) {
 			float dmg = Mathf.Floor(DamageCount);
 			DamageCount -= dmg;
@@ -251,10 +253,10 @@ public class GameSystemCtrl : MonoBehaviour {
 		WeatherSnowData.State = false;
 
 		currentDisasterLevel = 1;
-		DisasterDroughtData.DayUpdate = () => { DisasterDroughtData.setDamage(ref currentPeople, currentDisasterLevel, DisasterLevelData[currentDisasterLevel-1].DurationDays); };
-		DisasterFloodData.DayUpdate = () => { DisasterFloodData.setDamage(ref currentPeople, currentDisasterLevel, DisasterLevelData[currentDisasterLevel-1].DurationDays); };
-		DisasterTyphoonData.DayUpdate = () => { DisasterTyphoonData.setDamage(ref currentPeople, currentDisasterLevel, DisasterLevelData[currentDisasterLevel-1].DurationDays); };
-		DisasterHeavySnowData.DayUpdate = () => { DisasterHeavySnowData.setDamage(ref currentPeople, currentDisasterLevel, DisasterLevelData[currentDisasterLevel-1].DurationDays); };
+		DisasterDroughtData.DayUpdate = () => { DisasterDroughtData.setDamage(ref currentPeople, currentDisasterLevel, DisasterLevelData[currentDisasterLevel-1].DurationDays, 1f - UpgradeTechData[upgradeTechLevel-1].DecreaseDamage); };
+		DisasterFloodData.DayUpdate = () => { DisasterFloodData.setDamage(ref currentPeople, currentDisasterLevel, DisasterLevelData[currentDisasterLevel-1].DurationDays, 1f - UpgradeTechData[upgradeTechLevel-1].DecreaseDamage); };
+		DisasterTyphoonData.DayUpdate = () => { DisasterTyphoonData.setDamage(ref currentPeople, currentDisasterLevel, DisasterLevelData[currentDisasterLevel-1].DurationDays, 1f - UpgradeTechData[upgradeTechLevel-1].DecreaseDamage); };
+		DisasterHeavySnowData.DayUpdate = () => { DisasterHeavySnowData.setDamage(ref currentPeople, currentDisasterLevel, DisasterLevelData[currentDisasterLevel-1].DurationDays, 1f - UpgradeTechData[upgradeTechLevel-1].DecreaseDamage); };
 
 		currentGold = StartGold;
 
