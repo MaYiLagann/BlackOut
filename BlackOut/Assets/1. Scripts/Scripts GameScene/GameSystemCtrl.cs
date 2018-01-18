@@ -187,6 +187,22 @@ public class DisasterData {
 
 /* Disaster Class */
 
+/* Fish Class */
+
+[Serializable]
+public class FishData {
+	public Sprite Image;
+	public string Name;
+	public string Size;
+	public int ActiveLevel;
+	public int MaxHealth;
+	public float PriceGold;
+	[Range(0f, 1f)]
+	public float Percentage;
+}
+
+/* Fish Class */
+
 public class GameSystemCtrl : MonoBehaviour {
 
 	[Header("- Time Settings -")]
@@ -222,6 +238,9 @@ public class GameSystemCtrl : MonoBehaviour {
 	public DisasterData DisasterFloodData;
 	public DisasterData DisasterTyphoonData;
 	public DisasterData DisasterHeavySnowData;
+
+	[Header("- Fish Settings -")]
+	public FishData[] FishTypeData;
 
 	[Header("- Gold Settings -")]
 	public float StartGold = 0;
