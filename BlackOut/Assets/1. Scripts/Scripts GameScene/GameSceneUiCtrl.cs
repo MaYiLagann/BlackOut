@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -64,44 +65,73 @@ public class GameSceneUiCtrl : MonoBehaviour {
 	/* Event Functions */
 
 	void Awake() {
+		CurrentGameSystemCtrl.onSecondUpdate += new EventHandler(SecondUpdate);
+		CurrentGameSystemCtrl.onDayUpdate += new EventHandler(DayUpdate);
+		CurrentGameSystemCtrl.onMonthUpdate += new EventHandler(MonthUpdate);
+		CurrentGameSystemCtrl.onYearUpdate += new EventHandler(YearUpdate);
+		CurrentGameSystemCtrl.onDayToggle += new EventHandler(DayToggle);
+		CurrentGameSystemCtrl.onUpgradeUpdate += new EventHandler(UpgradeUpdate);
+		
 		InitDayNightCycle();
+		SetUpgradeUiValues();
+		SetStaticUiValues();
 	}
 
-	void FixedUpdate() {
+	void Update() {
 
-		SetStaticUiValues();
-		switch(gameObject.GetComponent<Animator>().GetInteger("State")){
+		if(Input.GetKeyDown(KeyCode.Escape)) {
+			switch(gameObject.GetComponent<Animator>().GetInteger("State")){
 			case -1:
-				if(Input.GetKeyDown(KeyCode.Escape)) {
-					SetAnim(0);
-					CurrentGameSystemCtrl.toggleDayRun(true);
-				}
+				SetAnim(0);
+				CurrentGameSystemCtrl.toggleDayRun(true);
 			break;
 			case 0:
-				SetMainUiValues();
-				if(Input.GetKeyDown(KeyCode.Escape)) {
-					SetAnim(-1);
-					CurrentGameSystemCtrl.toggleDayRun(false);
-				}
+				SetAnim(-1);
+				CurrentGameSystemCtrl.toggleDayRun(false);
 			break;
 			case 1:
-				SetDevUiValues();
-				if(Input.GetKeyDown(KeyCode.Escape)) {
-					SetAnim(0);
-				}
+				SetAnim(0);
 			break;
 			case 2:
-				SetUpgradeUiValues();
-				if(Input.GetKeyDown(KeyCode.Escape)) {
-					SetAnim(0);
-					CurrentGameSystemCtrl.toggleDayRun(true);
-				}
+				SetAnim(0);
+				CurrentGameSystemCtrl.toggleDayRun(true);
 			break;
+			}
 		}
 
 		DayNightCycleAnimator.speed = CurrentGameSystemCtrl.getDayRun()? 1/CurrentGameSystemCtrl.DaySeconds*CurrentGameSystemCtrl.DaySpeed : 0;
+		
+
+		if(gameObject.GetComponent<Animator>().GetInteger("State") == 1){
+			SetDevUiValues();
+		}
+	}
+
+	void SecondUpdate(object sender, EventArgs e) {
+		SetStaticUiValues();
+		SetMainUiValues();
+	}
+
+	void DayUpdate(object sender, EventArgs e) {
+
+	}
+
+	void MonthUpdate(object sender, EventArgs e) {
+		
+	}
+
+	void YearUpdate(object sender, EventArgs e) {
+		
+	}
+
+	void DayToggle(object sender, EventArgs e) {
+		SetForegroundUiValues();
 	}
 	
+	void UpgradeUpdate(object sender, EventArgs e) {
+		SetUpgradeUiValues();
+	}
+
 	/* Event Functions */
 
 	/* Logic Functions */
@@ -116,19 +146,21 @@ public class GameSceneUiCtrl : MonoBehaviour {
 		System.DateTime date = CurrentGameSystemCtrl.getDayDateTime();
 		StaticTimeText.text = date.Month + "월 " + date.Day + "일 ";
 		StaticCurrentGoldText.text = CurrentGameSystemCtrl.getCurrentGold().ToString("F0");
-
-		WeatherRainEffect.SetActive(CurrentGameSystemCtrl.WeatherRainData.State);
-		WeatherSnowEffect.SetActive(CurrentGameSystemCtrl.WeatherSnowData.State);
-		DisasterDroughtEffect.SetActive(CurrentGameSystemCtrl.DisasterDroughtData.getLeftDays() > 0);
-		DisasterFloodEffect.SetActive(CurrentGameSystemCtrl.DisasterFloodData.getLeftDays() > 0);
-		DisasterTyphoonEffect.SetActive(CurrentGameSystemCtrl.DisasterTyphoonData.getLeftDays() > 0);
-		DisasterHeavySnowEffect.SetActive(CurrentGameSystemCtrl.DisasterHeavySnowData.getLeftDays() > 0);
 	}
 
 	private void SetMainUiValues() {
 		MainCurrentPeopleText.text = CurrentGameSystemCtrl.getCurrentPeople() + "/" + CurrentGameSystemCtrl.getCurrentMaxPeople() + " 명";
 		MainCurrentPeopleSpawnSecondsPanel.SetActive(CurrentGameSystemCtrl.getCurrentPeopleSeconds() > 0f && CurrentGameSystemCtrl.getCurrentPeople() < CurrentGameSystemCtrl.getCurrentMaxPeople());
 		MainCurrentPeopleSpawnSecondsText.text = CurrentGameSystemCtrl.getCurrentPeopleSeconds().ToString("F0") + "s";
+	}
+	
+	private void SetForegroundUiValues() {
+		WeatherRainEffect.SetActive(CurrentGameSystemCtrl.WeatherRainData.State);
+		WeatherSnowEffect.SetActive(CurrentGameSystemCtrl.WeatherSnowData.State);
+		DisasterDroughtEffect.SetActive(CurrentGameSystemCtrl.DisasterDroughtData.getLeftDays() > 0);
+		DisasterFloodEffect.SetActive(CurrentGameSystemCtrl.DisasterFloodData.getLeftDays() > 0);
+		DisasterTyphoonEffect.SetActive(CurrentGameSystemCtrl.DisasterTyphoonData.getLeftDays() > 0);
+		DisasterHeavySnowEffect.SetActive(CurrentGameSystemCtrl.DisasterHeavySnowData.getLeftDays() > 0);
 	}
 
 	private void SetDevUiValues() {

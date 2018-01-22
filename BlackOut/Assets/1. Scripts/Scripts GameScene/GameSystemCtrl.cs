@@ -206,10 +206,10 @@ public class FishData {
 public class GameSystemCtrl : MonoBehaviour {
 
 	[Header("- Time Settings -")]
+	[Range(0, 100)]
+	public float GameSpeed = 1f;
 	public float DaySeconds = 600f;
 	public float StartDaySecond = 0f;
-	[Range(0, 100)]
-	public float DaySpeed = 1f;
 
 	private bool dayRun;
 	private int daySurvives;
@@ -254,6 +254,17 @@ public class GameSystemCtrl : MonoBehaviour {
 	[Header("- Require Components -")]
 	public BuildingScaler CurrentBuildingScaler;
 
+	/* Events */
+
+	public event EventHandler onSecondUpdate;
+	public event EventHandler onDayUpdate;
+	public event EventHandler onMonthUpdate;
+	public event EventHandler onYearUpdate;
+	public event EventHandler onDayToggle;
+	public event EventHandler onUpgradeUpdate;
+
+	/* Events */
+
 	/* Event Functions */
 
 	void Awake () {
@@ -281,8 +292,6 @@ public class GameSystemCtrl : MonoBehaviour {
 
 		currentPeople = StartPeople;
 		currentPeopleLeftSeconds = getSpawnPeopleSeconds();
-
-		CurrentBuildingScaler.SetScale(upgradeBuildingLevel);
 	}
 	
 	void Update () {
@@ -300,6 +309,8 @@ public class GameSystemCtrl : MonoBehaviour {
 			currentPeopleLeftSeconds = getSpawnPeopleSeconds();
 		}
 
+		if(onSecondUpdate != null)
+			onSecondUpdate(this, EventArgs.Empty);
 	}
 
 	void DayUpdate () {
@@ -314,6 +325,8 @@ public class GameSystemCtrl : MonoBehaviour {
 		DisasterTyphoonData.subLeftDays(1f);
 		DisasterHeavySnowData.subLeftDays(1f);
 
+		if(onDayUpdate != null)
+			onDayUpdate(this, EventArgs.Empty);
 	}
 	
 	void MonthUpdate () {
@@ -348,10 +361,13 @@ public class GameSystemCtrl : MonoBehaviour {
 			});
 		}
 
+		if(onMonthUpdate != null)
+			onMonthUpdate(this, EventArgs.Empty);
 	}
 
 	void YearUpdate () {
-
+		if(onYearUpdate != null)
+			onYearUpdate(this, EventArgs.Empty);
 	}
 
 	/* Event Functions */
@@ -465,6 +481,9 @@ public class GameSystemCtrl : MonoBehaviour {
 		currentGold -= UpgradeBuildingData[upgradeBuildingLevel].CostGold;
 		upgradeBuildingLevel++;
 		setDisasterLevel();
+		
+		if(onUpgradeUpdate != null)
+			onUpgradeUpdate(this, EventArgs.Empty);
 	}
 	
 	public void setUpgradeLandLevel() {
@@ -474,6 +493,9 @@ public class GameSystemCtrl : MonoBehaviour {
 		currentGold -= UpgradeLandData[upgradeLandLevel].CostGold;
 		upgradeLandLevel++;
 		setDisasterLevel();
+		
+		if(onUpgradeUpdate != null)
+			onUpgradeUpdate(this, EventArgs.Empty);
 	}
 	
 	public void setUpgradeFishingLevel() {
@@ -483,6 +505,9 @@ public class GameSystemCtrl : MonoBehaviour {
 		currentGold -= UpgradeFishingData[upgradeFishingLevel].CostGold;
 		upgradeFishingLevel++;
 		setDisasterLevel();
+		
+		if(onUpgradeUpdate != null)
+			onUpgradeUpdate(this, EventArgs.Empty);
 	}
 	
 	public void setUpgradeTechLevel() {
@@ -492,14 +517,20 @@ public class GameSystemCtrl : MonoBehaviour {
 		currentGold -= UpgradeTechData[upgradeTechLevel].CostGold;
 		upgradeTechLevel++;
 		setDisasterLevel();
+		
+		if(onUpgradeUpdate != null)
+			onUpgradeUpdate(this, EventArgs.Empty);
 	}
 
 	public void toggleDayRun() {
-		dayRun = !dayRun;
+		toggleDayRun(!dayRun);
 	}
 
 	public void toggleDayRun(bool run) {
 		dayRun = run;
+
+		if(onDayToggle != null)
+			onDayToggle(this, EventArgs.Empty);
 	}
 
 	private void RunTime() {
@@ -508,8 +539,8 @@ public class GameSystemCtrl : MonoBehaviour {
 		float prevDayProgress = dayProgress;
 		DateTime prevDayDateTime = dayDateTime;
 
-		dayProgress += Time.deltaTime * DaySpeed;
-		dayDateTime = dayDateTime.AddDays(Time.deltaTime*DaySpeed/DaySeconds);
+		dayProgress += Time.deltaTime * GameSpeed;
+		dayDateTime = dayDateTime.AddDays(Time.deltaTime * GameSpeed / DaySeconds);
 
 		if(((int)prevDayProgress) != ((int)dayProgress)) SecondUpdate();
 		if(prevDayDateTime.Day != dayDateTime.Day) DayUpdate();
