@@ -99,7 +99,7 @@ public class GameSceneUiCtrl : MonoBehaviour {
 			}
 		}
 
-		DayNightCycleAnimator.speed = CurrentGameSystemCtrl.getDayRun()? 1/CurrentGameSystemCtrl.DaySeconds*CurrentGameSystemCtrl.DaySpeed : 0;
+		DayNightCycleAnimator.speed = CurrentGameSystemCtrl.getDayRun()? 1/CurrentGameSystemCtrl.DaySeconds*CurrentGameSystemCtrl.GameSpeed : 0;
 		
 
 		if(gameObject.GetComponent<Animator>().GetInteger("State") == 1){
