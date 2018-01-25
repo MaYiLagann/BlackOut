@@ -15,6 +15,7 @@ public class GameSceneUiCtrl : MonoBehaviour {
 	[Header("- Main Settings -")]
 	public Text MainCurrentPeopleText;
 	public Text MainCurrentPeopleSpawnSecondsText;
+	public Text MainDisasterLeftSecondText;
 	public GameObject MainCurrentPeopleSpawnSecondsPanel;
 
 	[Header("- Upgrade Settings -")]
@@ -110,10 +111,11 @@ public class GameSceneUiCtrl : MonoBehaviour {
 	void SecondUpdate(object sender, EventArgs e) {
 		SetStaticUiValues();
 		SetMainUiValues();
+		SetForegroundUiValues();
 	}
 
 	void DayUpdate(object sender, EventArgs e) {
-
+		
 	}
 
 	void MonthUpdate(object sender, EventArgs e) {
@@ -125,7 +127,7 @@ public class GameSceneUiCtrl : MonoBehaviour {
 	}
 
 	void DayToggle(object sender, EventArgs e) {
-		SetForegroundUiValues();
+
 	}
 	
 	void UpgradeUpdate(object sender, EventArgs e) {
@@ -152,15 +154,18 @@ public class GameSceneUiCtrl : MonoBehaviour {
 		MainCurrentPeopleText.text = CurrentGameSystemCtrl.getCurrentPeople() + "/" + CurrentGameSystemCtrl.getCurrentMaxPeople() + " 명";
 		MainCurrentPeopleSpawnSecondsPanel.SetActive(CurrentGameSystemCtrl.getCurrentPeopleSeconds() > 0f && CurrentGameSystemCtrl.getCurrentPeople() < CurrentGameSystemCtrl.getCurrentMaxPeople());
 		MainCurrentPeopleSpawnSecondsText.text = CurrentGameSystemCtrl.getCurrentPeopleSeconds().ToString("F0") + "s";
+		float disasterleftsecond = CurrentGameSystemCtrl.DisasterDroughtData.getLeftDays() + CurrentGameSystemCtrl.DisasterFloodData.getLeftDays() + CurrentGameSystemCtrl.DisasterTyphoonData.getLeftDays() + CurrentGameSystemCtrl.DisasterHeavySnowData.getLeftDays();
+		MainDisasterLeftSecondText.gameObject.SetActive(disasterleftsecond > 0f);
+		MainDisasterLeftSecondText.text = "재해: " + disasterleftsecond + "일 남음";
 	}
 	
 	private void SetForegroundUiValues() {
 		WeatherRainEffect.SetActive(CurrentGameSystemCtrl.WeatherRainData.State);
 		WeatherSnowEffect.SetActive(CurrentGameSystemCtrl.WeatherSnowData.State);
-		DisasterDroughtEffect.SetActive(CurrentGameSystemCtrl.DisasterDroughtData.getLeftDays() > 0);
-		DisasterFloodEffect.SetActive(CurrentGameSystemCtrl.DisasterFloodData.getLeftDays() > 0);
-		DisasterTyphoonEffect.SetActive(CurrentGameSystemCtrl.DisasterTyphoonData.getLeftDays() > 0);
-		DisasterHeavySnowEffect.SetActive(CurrentGameSystemCtrl.DisasterHeavySnowData.getLeftDays() > 0);
+		DisasterDroughtEffect.SetActive(CurrentGameSystemCtrl.DisasterDroughtData.getLeftDays() > 0f);
+		DisasterFloodEffect.SetActive(CurrentGameSystemCtrl.DisasterFloodData.getLeftDays() > 0f);
+		DisasterTyphoonEffect.SetActive(CurrentGameSystemCtrl.DisasterTyphoonData.getLeftDays() > 0f);
+		DisasterHeavySnowEffect.SetActive(CurrentGameSystemCtrl.DisasterHeavySnowData.getLeftDays() > 0f);
 	}
 
 	private void SetDevUiValues() {
